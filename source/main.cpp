@@ -6,39 +6,7 @@
 //  Copyright © 2016 MCJack123. All rights reserved.
 //
 
-#include <cstdio>
-#include <malloc.h>
-#include <fstream>
-#include <string>
-#include <cstdlib>
-#include <tuple>
-#include <sys/unistd.h>
-#ifndef _SYS_UNISTD_H_
-#include <unistd.h>
-#endif
-#include <3ds.h>
-#include <3ds/services/csnd.h>
-
-
-// 3DS Top Screen Dimensions:
-//     Width: 400 pixels / 50 chars (8px char width)
-//	  Height: 240 pixels / 30 chars (8px char height)
-// 3DS Bottom Screen Dimensions:
-//     Width: 320 pixels / 40 chars (8px char width)
-//    Height: Same as Top Screen
-
-PrintConsole screen, debug;
-std::string scorefile[8];
-std::string buffer = "";
-std::tuple<const char *, int> levnames[4] = {std::make_pair("First Level", 11), std::make_pair("Second Level", 12), std::make_pair("Another Level", 13), std::make_pair("Goo Lagoon", 10)};
-bool debugMode = true;
-int leveln = 0;
-int maxlev = 3;
-	char * levtext = (char*)malloc(40);
-char * levtextt = (char*)malloc(40);
-	char * pmtext = (char*)malloc(30);
-	char * nmtext = (char*)malloc(30);
-u8 consoletype;
+#include "main.h"
 
 /* The drawing board :)
 
@@ -67,36 +35,12 @@ u8 consoletype;
 	 \|  |______________________________|  |/
 
 */
-
-void debugPrint(const char * debugText) {
-	if (debugMode) {
-		consoleSelect(&debug);
-		printf("%s\n", debugText);
-		consoleSelect(&screen);
-	}
-}
-int incIntWithMax(int& addend, int maximum, int minimum = 0) {
-	if (addend == maximum) addend = minimum;
-	else addend++;
-	return addend;
-}
-int decIntWithMax(int& addend, int maximum, int minimum = 0) {
-	if (addend == minimum) addend = maximum;
-	else addend--;
-	return addend;
-}
-
-template <class T>
-void sleep(T time) {usleep(time * 1000000);}
-
-// The main game
-void runLevel(int levelid) {
-	consoleSelect(&screen);
-	printf("Not working now\n");
-}
-inline bool fexists (const std::string& name) {
-  return ( access( name.c_str(), F_OK ) != -1 );
-}
+// 3DS Top Screen Dimensions:
+//     Width: 400 pixels / 50 chars (8px char width)
+//	  Height: 240 pixels / 30 chars (8px char height)
+// 3DS Bottom Screen Dimensions:
+//     Width: 320 pixels / 40 chars (8px char width)
+//    Height: Same as Top Screen
 
 int main() {
 	gfxInitDefault();
@@ -143,27 +87,21 @@ int main() {
 	while (!(in.bad() || in.eof()));
 	in.close();
 	debugPrint("Loading song...");
-	u8* sndbuffer;
-    bool playing = false;
-	if (fexists("data/background.raw")) {
-    FILE *file = fopen("data/background.raw", "rb");
-	debugPrint("Song loaded.");
-    fseek(file, 0, SEEK_END);
-    off_t sndsize = ftell(file);
-    sndbuffer = (u8*)linearAlloc(sndsize);
-    fseek(file, 0, SEEK_SET);
-	debugPrint("Reading file...");
-    off_t bytesRead = fread(sndbuffer, 1, sndsize, file);
-    fclose(file);
-	debugPrint("File read.");
-	csndPlaySound(0x8, CSND_LOOPMODE_NORMAL, 32000, 1.0, 0.0, sndbuffer, sndbuffer, (u32)sndsize);
-	} else debugPrint("File doesn't exist!");
+	if (fexists("data/background_loop.bin")) {
+		if (!audio_load("data/background_loop.bin", &sound1)) {debugPrint("The song was unable to load."); sleep(3); goto End;}
+	} else {debugPrint("File doesn't exist!"); sleep(3); goto End;}
 		consoleClear();
 		consoleSelect(&screen);
 		consoleClear();
 	debugPrint("Starting program...");
 	while (aptMainLoop()) {
+		audio_stop();
+		audio_play(&sound1, true);
 		//The menu
+		char * levtext = (char*)malloc(40);
+		char * levtextt = (char*)malloc(40);
+		char * pmtext = (char*)malloc(30);
+		char * nmtext = (char*)malloc(30);
 		sprintf(levtext, "%d: %s", leveln + 1, std::get<0>(levnames[leveln]));
 		debugPrint(levtext);
 		debugPrint("Creating level name text...");
@@ -210,9 +148,9 @@ int main() {
 		printf("\n\n\n\n\n\n\n\n\n\n     /|%s|\\\n\
 	 / |                                   | \\\n\
    /  |    __________________________     |  \\\n\
-  /   |   |%s|%d%%  |   \\\n\
+  /   |   |%s|%d%% |   \\\n\
  |    |    __________________________     |    |\n\
-  \\   |   |%s|%d%%  |   /\n\
+  \\   |   |%s|%d%% |   /\n\
    \\  |   ______________________________  |  /\n\
     \\ |  |             Go!              | | /\n\
 	  \\|  |______________________________| |/\n", levtext, nmtext, nmscore[leveln], pmtext, pmscore[leveln]);
@@ -224,15 +162,16 @@ int main() {
     		hidScanInput();
 			kDown = hidKeysDown();
 			if (kDown) {
-				if (KEY_START) goto End;
-				else if (KEY_LEFT) {incIntWithMax(leveln, maxlev); cont = false;}
-				else if (KEY_RIGHT) {decIntWithMax(leveln, maxlev); cont = false;}
-				else if (KEY_A) {runLevel(leveln); cont = false;}
+				if (kDown & KEY_START) goto End;
+				else if (kDown & KEY_RIGHT) {incIntWithMax(leveln, maxlev); cont = false;}
+				else if (kDown & KEY_LEFT) {decIntWithMax(leveln, maxlev); cont = false;}
+				else if (kDown & KEY_A) {runLevel(leveln); cont = false;}
 			}
 		} while (cont);
 	}
 	End:
 	debugPrint("Exiting...");
+	audio_free(&sound1);
 	csndExit();
 	gfxExit();
 	sleep(0.5);
