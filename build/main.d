@@ -1,5 +1,4 @@
 main.o: /Users/CommonFiles/ASCIIJump/ASCIIJump3DS/source/main.cpp \
- /Users/CommonFiles/ASCIIJump/ASCIIJump3DS/source/3DSTerm.hpp \
  /opt/devkitPro/libctru/include/3ds.h \
  /opt/devkitPro/libctru/include/3ds/types.h \
  /opt/devkitPro/libctru/include/3ds/result.h \
@@ -55,8 +54,6 @@ main.o: /Users/CommonFiles/ASCIIJump/ASCIIJump3DS/source/main.cpp \
  /opt/devkitPro/libctru/include/3ds/ndsp/channel.h \
  /opt/devkitPro/libctru/include/3ds/sdmc.h \
  /opt/devkitPro/libctru/include/3ds/romfs.h
-
-/Users/CommonFiles/ASCIIJump/ASCIIJump3DS/source/3DSTerm.hpp:
 
 /opt/devkitPro/libctru/include/3ds.h:
 

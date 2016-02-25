@@ -7,6 +7,7 @@
 //
 
 #include <cstdio>
+#include <malloc.h>
 #include <fstream>
 #include <string>
 #include <cstdlib>
@@ -15,7 +16,9 @@
 #ifndef _SYS_UNISTD_H_
 #include <unistd.h>
 #endif
-#include "3DSTerm.hpp"
+#include <3ds.h>
+#include <3ds/services/csnd.h>
+
 
 // 3DS Top Screen Dimensions:
 //     Width: 400 pixels / 50 chars (8px char width)
@@ -28,11 +31,14 @@ PrintConsole screen, debug;
 std::string scorefile[8];
 std::string buffer = "";
 std::tuple<const char *, int> levnames[4] = {std::make_pair("First Level", 11), std::make_pair("Second Level", 12), std::make_pair("Another Level", 13), std::make_pair("Goo Lagoon", 10)};
-bool debugMode = false;
-int leveln = 1;
+bool debugMode = true;
+int leveln = 0;
+int maxlev = 3;
 	char * levtext = (char*)malloc(40);
+char * levtextt = (char*)malloc(40);
 	char * pmtext = (char*)malloc(30);
 	char * nmtext = (char*)malloc(30);
+u8 consoletype;
 
 /* The drawing board :)
 
@@ -69,19 +75,28 @@ void debugPrint(const char * debugText) {
 		consoleSelect(&screen);
 	}
 }
+int incIntWithMax(int& addend, int maximum, int minimum = 0) {
+	if (addend == maximum) addend = minimum;
+	else addend++;
+	return addend;
+}
+int decIntWithMax(int& addend, int maximum, int minimum = 0) {
+	if (addend == minimum) addend = maximum;
+	else addend--;
+	return addend;
+}
 
 template <class T>
-int numDigits(T number) {
-    int digits = 0;
-    if (number < 0) digits = 1; // remove this line if '-' counts as a digit (negatives will not be handled in this program)
-    while (number) {
-        number /= 10;
-        digits++;
-    }
-    return digits;
+void sleep(T time) {usleep(time * 1000000);}
+
+// The main game
+void runLevel(int levelid) {
+	consoleSelect(&screen);
+	printf("Not working now\n");
 }
-template <class U>
-void sleep(U time) {usleep(time * 1000000);}
+inline bool fexists (const std::string& name) {
+  return ( access( name.c_str(), F_OK ) != -1 );
+}
 
 int main() {
 	gfxInitDefault();
@@ -96,7 +111,7 @@ int main() {
 	u32 dDown = hidKeysDown();
 	u32 dHeld = hidKeysHeld();
 	if ((dDown || dHeld) & KEY_X) debugMode = true;
-	if (debugMode) printf("\nDebug mode is on");
+	if (debugMode) printf("\n                 Debug mode is on");
 	sleep(2);
 	consoleClear();
 	sleep(1);
@@ -121,39 +136,41 @@ int main() {
 	in.open("data/scores.txt");
 	int i = 0;
 	do {
-	    scorefile[i] = buffer;
-		std::getline(in, buffer);
-		consoleSelect(&debug);
-		if (debugMode) printf("%d\n", i);
-		consoleSelect(&screen);
+	    if (i % 2 == 0) {std::getline(in, buffer); pmscore[i/2] = atoi(buffer.c_str());}
+		else {std::getline(in, buffer); nmscore[(i-1)/2] = atoi(buffer.c_str());}
 		i++;
 	}
 	while (!(in.bad() || in.eof()));
-	scorefile[i] = buffer;
-	std::getline(in, buffer);
 	in.close();
-	i = 0;
-	debugPrint("The scores.txt file:");
-	for (std::string score : scorefile) {
-		if (score == "" || score.c_str() == nullptr) break;
-		nmscore[i] = atoi(scorefile[i+1].substr(0, scorefile[i+1].find("|") - 1).c_str());
-		pmscore[i] = atoi(scorefile[i+1].substr(scorefile[i+1].find("|") + 1).c_str());
-		consoleSelect(&debug);
-		if (debugMode) printf("%d: %s\n", i, score.c_str());
-		i++;
-	}
+	debugPrint("Loading song...");
+	u8* sndbuffer;
+    bool playing = false;
+	if (fexists("data/background.raw")) {
+    FILE *file = fopen("data/background.raw", "rb");
+	debugPrint("Song loaded.");
+    fseek(file, 0, SEEK_END);
+    off_t sndsize = ftell(file);
+    sndbuffer = (u8*)linearAlloc(sndsize);
+    fseek(file, 0, SEEK_SET);
+	debugPrint("Reading file...");
+    off_t bytesRead = fread(sndbuffer, 1, sndsize, file);
+    fclose(file);
+	debugPrint("File read.");
+	csndPlaySound(0x8, CSND_LOOPMODE_NORMAL, 32000, 1.0, 0.0, sndbuffer, sndbuffer, (u32)sndsize);
+	} else debugPrint("File doesn't exist!");
 		consoleClear();
-		consoleSelect(&console);
+		consoleSelect(&screen);
 		consoleClear();
-	sleep(2);
 	debugPrint("Starting program...");
 	while (aptMainLoop()) {
 		//The menu
-		sprintf(levtext, "%d: %s", leveln, std::get<0>(levnames[leveln]));
+		sprintf(levtext, "%d: %s", leveln + 1, std::get<0>(levnames[leveln]));
+		debugPrint(levtext);
 		debugPrint("Creating level name text...");
-		for (int j = 0, k = (36 - std::get<1>(levnames[leveln]) - 3) / 2, l = (36 - std::get<1>(levnames[leveln]) - 3) % 2; j <= k; j++) {
-			if (l == 1 && j < k) {sprintf(levtext, "  %s ", levtext); break;}
-			else sprintf(levtext, " %s ", levtext);
+		for (int j = 0, k = (36 - std::get<1>(levnames[leveln]) - 3) / 2, l = (36 - std::get<1>(levnames[leveln]) - 3) % 2; j <= k - 1; j++) {
+			if (l == 1 && j > 94) {sprintf(levtextt, " %s ", levtext); levtext = levtextt; break;}
+			else sprintf(levtextt, " %s ", levtext);
+			levtext = levtextt;
 			consoleSelect(&debug);
 			if (debugMode) printf(".");
 			consoleSelect(&screen);
@@ -173,6 +190,8 @@ int main() {
 			consoleSelect(&debug);
 			if (debugMode) printf(".");
 		}
+		if (debugMode) printf(levtext);
+		//if (debugMode) sleep(4);
 		sleep(.2);
 		consoleClear();
 		printf("\n\n\n\n\n\n\n\n\n //___\\\\   /---\\     /---\\   |--|  |--|\n\
@@ -186,33 +205,33 @@ int main() {
   _| |    | | | |  | |\\ \\/ /| |  | __/\n\
  | | |    | \\_/ |  | | \\__/ | |  | |\n\
  \\___/     \\___/   |_|      |_|  |_|\n");
-		fflush(stdout);
-		consoleSelect(&console);
+		consoleSelect(&screen);
 		consoleClear();
-		sleep(1);
-		int errnom = printf("\n\n\n\n\n\n\n\n\n\n     /|%s|\\\n\
-	/ |                                    | \\\n\
-   /  |    _________________________       |  \\\n\
-  /   |   |%s| %d%%   |   \\\n\
- |    |    _________________________       |    |\n\
-  \\   |   |%s| %d%%  |   /\n\
-   \\  |   ______________________________   |  /\n\
-    \\ |  |             Go!              |  | /\n\
-	 \\|  |______________________________|  |/\n", levtext, nmtext, nmscore[leveln], pmtext, pmscore[leveln]);
-		fflush(stdout);
-		if (consoleSelect(&debug) == &debug) {debugPrint("It printed to debug!"); consoleSelect(&debug); sleep(3);}
-		printf("%d\n", errnom);
-		printf("Press start now to exit.\n");
+		printf("\n\n\n\n\n\n\n\n\n\n     /|%s|\\\n\
+	 / |                                   | \\\n\
+   /  |    __________________________     |  \\\n\
+  /   |   |%s|%d%%  |   \\\n\
+ |    |    __________________________     |    |\n\
+  \\   |   |%s|%d%%  |   /\n\
+   \\  |   ______________________________  |  /\n\
+    \\ |  |             Go!              | | /\n\
+	  \\|  |______________________________| |/\n", levtext, nmtext, nmscore[leveln], pmtext, pmscore[leveln]);
+		//printf("Press start now to exit.\n");
 		hidScanInput();
 		u32 kDown = hidKeysDown();
 		bool cont = true;
 		do {
     		hidScanInput();
 			kDown = hidKeysDown();
-			if (kDown & KEY_START) cont=false;
+			if (kDown) {
+				if (KEY_START) goto End;
+				else if (KEY_LEFT) {incIntWithMax(leveln, maxlev); cont = false;}
+				else if (KEY_RIGHT) {decIntWithMax(leveln, maxlev); cont = false;}
+				else if (KEY_A) {runLevel(leveln); cont = false;}
+			}
 		} while (cont);
-		break;
 	}
+	End:
 	debugPrint("Exiting...");
 	csndExit();
 	gfxExit();
