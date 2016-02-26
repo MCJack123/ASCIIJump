@@ -11,9 +11,12 @@
 #endif
 #include <3ds.h>
 #include <3ds/services/csnd.h>
-#include "sound.h"
+//#define __LUA_SOUND_ // is currently unsafe
+#define __DEBUG
 
 void debugPrint(const char * debugText);
+#ifndef __LUA_SOUND_
+#include "sound.h"
 bool audioIsActive = true;
 bool audio_load(const char *audio, themeSound * aThemeSound){
 	if (!audioIsActive) debugPrint("Audio is disabled.");
@@ -86,24 +89,27 @@ if (!audioIsActive) debugPrint("Audio is disabled.");
         csndExecCmds(true);
     }
 }
-
+#else
+#include "luaSound.hpp"
+#endif
 PrintConsole screen, debug;
 std::string scorefile[8];
 std::string buffer = "";
 std::tuple<const char *, int> levnames[4] = {std::make_pair("First Level", 11), std::make_pair("Second Level", 12), std::make_pair("Another Level", 13), std::make_pair("Goo Lagoon", 10)};
-bool debugMode = true;
 int leveln = 0;
 int maxlev = 3;
 u8 consoletype;
+#ifndef __LUA_SOUND_
 themeSound sound1;
 themeSound sound2; // backup just in case its needed
+#endif
 
 void debugPrint(const char * debugText) {
-	if (debugMode) {
+	#ifdef __DEBUG
 		consoleSelect(&debug);
 		printf("%s\n", debugText);
 		consoleSelect(&screen);
-	}
+	#endif
 }
 int incIntWithMax(int& addend, int maximum, int minimum = 0) {
 	if (addend == maximum) addend = minimum;
@@ -119,11 +125,6 @@ int decIntWithMax(int& addend, int maximum, int minimum = 0) {
 template <class T>
 void sleep(T time) {usleep(time * 1000000);}
 
-// The main game
-void runLevel(int levelid) {
-	consoleSelect(&screen);
-	printf("Not working now\n");
-}
 inline bool fexists (const std::string& name) {
   return ( access( name.c_str(), F_OK ) != -1 );
 }

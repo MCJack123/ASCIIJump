@@ -20,7 +20,7 @@ extern bool audioIsActive;
 
 void audio_stop(void);
 //void initThemeSounds();
-void audioPlay(themeSound * aThemeSound, bool loop);
+void audio_play(themeSound * aThemeSound, bool loop);
 //void playBootSound();
 //void startBGM();
 //void waitForSoundToFinishPlaying(themeSound * aThemeSound);

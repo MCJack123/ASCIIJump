@@ -6,7 +6,8 @@
 //  Copyright © 2016 MCJack123. All rights reserved.
 //
 
-#include "main.h"
+#include "utils.h"
+#include "level.h"
 
 /* The drawing board :)
 
@@ -54,8 +55,9 @@ int main() {
 	hidScanInput();
 	u32 dDown = hidKeysDown();
 	u32 dHeld = hidKeysHeld();
-	if ((dDown || dHeld) & KEY_X) debugMode = true;
-	if (debugMode) printf("\n                 Debug mode is on");
+	#ifdef __DEBUG
+	printf("\n                 Debug mode is on");
+	#endif
 	sleep(2);
 	consoleClear();
 	sleep(1);
@@ -88,15 +90,22 @@ int main() {
 	in.close();
 	debugPrint("Loading song...");
 	if (fexists("data/background_loop.bin")) {
+		#ifndef __LUA_SOUND_
 		if (!audio_load("data/background_loop.bin", &sound1)) {debugPrint("The song was unable to load."); sleep(3); goto End;}
+		#endif
 	} else {debugPrint("File doesn't exist!"); sleep(3); goto End;}
 		consoleClear();
 		consoleSelect(&screen);
 		consoleClear();
 	debugPrint("Starting program...");
 	while (aptMainLoop()) {
+	#ifndef __LUA_SOUND_
 		audio_stop();
 		audio_play(&sound1, true);
+		#else
+		void *wav = (void*)"data/background_loop.wav";
+		streamWAV_CSND(wav);
+		#endif
 		//The menu
 		char * levtext = (char*)malloc(40);
 		char * levtextt = (char*)malloc(40);
@@ -110,7 +119,9 @@ int main() {
 			else sprintf(levtextt, " %s ", levtext);
 			levtext = levtextt;
 			consoleSelect(&debug);
-			if (debugMode) printf(".");
+			#ifdef __DEBUG
+			printf(".");
+			#endif
 			consoleSelect(&screen);
 		}
 		debugPrint("\nCreating practice mode bar text...");
@@ -118,7 +129,9 @@ int main() {
 			if (i <= pmscore[leveln]) sprintf(pmtext, "%s|", pmtext);
 			else sprintf(pmtext, "%s_", pmtext);
 			consoleSelect(&debug);
-			if (debugMode) printf(".");
+			#ifdef __DEBUG 
+			printf(".");
+			#endif
 			consoleSelect(&screen);
 		}
 		debugPrint("\nCreating normal mode bar text...");
@@ -126,10 +139,13 @@ int main() {
 			if (i <= nmscore[leveln]) sprintf(nmtext, "%s|", nmtext);
 			else sprintf(nmtext, "%s_", nmtext);
 			consoleSelect(&debug);
-			if (debugMode) printf(".");
+			#ifdef __DEBUG 
+			printf(".");
+			#endif
 		}
-		if (debugMode) printf(levtext);
-		//if (debugMode) sleep(4);
+		#ifdef __DEBUG 
+		printf(levtext);
+		#endif
 		sleep(.2);
 		consoleClear();
 		printf("\n\n\n\n\n\n\n\n\n //___\\\\   /---\\     /---\\   |--|  |--|\n\
@@ -171,7 +187,9 @@ int main() {
 	}
 	End:
 	debugPrint("Exiting...");
+	#ifndef __LUA_SOUND_
 	audio_free(&sound1);
+	#endif
 	csndExit();
 	gfxExit();
 	sleep(0.5);
