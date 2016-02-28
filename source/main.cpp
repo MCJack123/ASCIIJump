@@ -6,7 +6,9 @@
 //  Copyright © 2016 MCJack123. All rights reserved.
 //
 
+#ifndef __ASCII3DS_UTILS_H_
 #include "utils.h"
+#endif
 #include "level.h"
 
 /* The drawing board :)
@@ -74,10 +76,8 @@ int main() {
       \\___/     \\___/   |_|      |_|  |_|");
 	consoleSelect(&debug);
 	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n               Loading...\n\n");
-	int nmscore[4];
-	int pmscore[4];
 	// Load the scores from scores.txt
-	debugPrint("Reading scores from sdmc://3ds/ASCIIJump3DS/data/scores.txt (yes, it is easy to hack the scores now)\nHere's some numbers:");
+	debugPrint("Reading scores from sdmc://3ds/ASCIIJump3DS/data/scores.txt (yes, it is easy to hack the scores now)");
 	std::ifstream in;
 	in.open("data/scores.txt");
 	int i = 0;
@@ -94,6 +94,7 @@ int main() {
 		if (!audio_load("data/background_loop.bin", &sound1)) {debugPrint("The song was unable to load."); sleep(3); goto End;}
 		#endif
 	} else {debugPrint("File doesn't exist!"); sleep(3); goto End;}
+	levelInit();
 		consoleClear();
 		consoleSelect(&screen);
 		consoleClear();
