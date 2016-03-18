@@ -91,7 +91,7 @@ int main() {
 	debugPrint("Loading song...");
 	if (fexists("data/background_loop.bin")) {
 		#ifndef __LUA_SOUND_
-		if (!audio_load("data/background_loop.bin", &sound1)) {debugPrint("The song was unable to load."); sleep(3); goto End;}
+		if (!audio_load("/3ds/ASCIIJump3DS/data/background_loop.bin", &sound1)) {debugPrint("The song was unable to load."); sleep(3); goto End;}
 		#endif
 	} else {debugPrint("File doesn't exist!"); sleep(3); goto End;}
 	levelInit();
@@ -104,7 +104,7 @@ int main() {
 		audio_stop();
 		audio_play(&sound1, true);
 		#else
-		void *wav = (void*)"data/background_loop.wav";
+		void *wav = (void*)"/3ds/ASCIIJump3DS/data/background_loop.wav";
 		streamWAV_CSND(wav);
 		#endif
 		//The menu
@@ -182,7 +182,15 @@ int main() {
 				if (kDown & KEY_START) goto End;
 				else if (kDown & KEY_RIGHT) {incIntWithMax(leveln, maxlev); cont = false;}
 				else if (kDown & KEY_LEFT) {decIntWithMax(leveln, maxlev); cont = false;}
-				else if (kDown & KEY_A) {runLevel(leveln); cont = false;}
+				else if (kDown & KEY_A) {consoleClear(); printf("\n\n\n\n\n\n\n\n\n\n     /|%s|\\\n\
+	 / |                                   | \\\n\
+   /  |    __________________________     |  \\\n\
+  /   |   |%s|%d%% |   \\\n\
+ |    |    __________________________     |    |\n\
+  \\   |   |%s|%d%% |   /\n\
+   \\  |   ______________________________  |  /\n\
+    \\ |  ||||||||||||||Go!||||||||||||||| | /\n\
+	  \\|  |______________________________| |/\n", levtext, nmtext, nmscore[leveln], pmtext, pmscore[leveln]); runLevel(leveln); cont = false;}
 			}
 		} while (cont);
 	}

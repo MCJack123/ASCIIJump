@@ -70,13 +70,14 @@ std::tuple<std::vector<const char *>, bool> convertCharToCube(char charToCube) {
 void runLevel(int levelid) {
 	// First, set up the music
 	consoleSelect(&screen);
+	sleep(1);
+	debugPrint("Loading song...");
 	#ifndef __LUA_SOUND_
 	audio_stop();
 	char * levmus = (char*)malloc(20);
-	sprintf(levmus, "data/level%d.bin", levelid);
-	audio_load(levmus, &sound1);
+	sprintf(levmus, "/3ds/ASCIIJump3DS/data/level%d.bin", levelid);
+	if (!audio_load(levmus, &sound1)) debugPrint("");
 	#endif
-	sleep(2);
 	clearAll();
 	#ifndef __LUA_SOUND_
 	audio_play(&sound1, false);
@@ -105,6 +106,7 @@ void runLevel(int levelid) {
 	int y = 0;
 	int y_orig;
 	bool jump = false;
+    bool falling = false;
 	int percentage;
 	int highscore = nmscore[levelid];
 	for (int x = 0; (true); x++) {
@@ -506,10 +508,11 @@ std::get<0>(convertCharToCube(r1[x+11]))[3]);} // Prints the squares
 		u32 bDown = hidKeysDown();
 		u32 bHeld = hidKeysHeld();
 		if ((bDown | bHeld) & KEY_START) break;
-		if (bDown | bHeld && !jump) {jump = true; y_orig = y++;}
+		if (bDown | bHeld && !jump && !falling) {jump = true; y_orig = y++;}
 		else if (jump && y == 1) y = 2;
-		else if (jump && y == 2) jump = false;
-		else if (!jump && /*ra[y-1][x] != ' ' && */ra[y-1][x+1] == '0' && y > 0) y--;
+        else if (jump && y == 2) {jump = false; falling = true;}
+        else if (!jump && /*ra[y-1][x] != ' ' && */ra[y-1][x+1] == '0' && y > 0) {y--; falling = true;}
+        else if (!(!jump && /*ra[y-1][x] != ' ' && */ra[y-1][x+1] == '0' && y > 0)) {falling = false;}
 		//while (percentage < 100) {
 		//	if (((r1.size() - 1) / 100) * percentage >= x) break;
 		//	percentage++;
