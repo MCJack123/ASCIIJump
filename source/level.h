@@ -49,6 +49,9 @@ void levelInit() {
 "0000000000000000000000000000000000000000000000000000000000B000000000000000000000000000000000000000000000000000000000000X000000000-0000000000000000000000DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD00000000000-------000000000-000000000000000000000000DDDDDDDDDDDD0000",\
 "000000000000000000000000000000000000000000000000000000B000B00000000000000000000000000000000000000000000X00000000DDDDDDDDDDDDDD00000000000000000000000000DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD0000000000000000000-----0000000000000000000000000000DDDDDDDDDDDDD000",\
 "00000000000000000B00000000000000xX00000000000000XXBsssBsssBX00000000000000000000XX00000DDDDDDDDsssDDDDDDDDDDDsssDDDDDDDDDDDDDDssssssssssssssssssssssssssDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDssssssssssssssssssssssssssssssssssssssssssssssssssssDDDDDDDDDDDDDD00F");
+	registerLevel(1, "", "", "", "", "", "", "", "C");
+	registerLevel(2, "", "", "", "", "", "", "", "C");
+	registerLevel(3, "", "", "", "", "", "", "", "C");
 }
 int unrec_blocks = 0;
 std::tuple<std::vector<const char *>, bool> convertCharToCube(char charToCube) {
@@ -72,6 +75,7 @@ std::tuple<std::vector<const char *>, bool> convertCharToCube(char charToCube) {
 // Now, let's actually make the game!
 void runLevel(int levelid) {
 	// First, set up the music
+	if (level_map[levelid][7] == "C") {printf("Coming soon!"); sleep(1); return;}
 	consoleSelect(&screen);
 	sleep(1);
 	debugPrint("Loading song...");
