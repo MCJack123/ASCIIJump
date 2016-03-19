@@ -55,7 +55,6 @@ main.o: /Users/CommonFiles/ASCIIJump/ASCIIJump3DS/source/main.cpp \
  /opt/devkitPro/libctru/include/3ds/ndsp/channel.h \
  /opt/devkitPro/libctru/include/3ds/sdmc.h \
  /opt/devkitPro/libctru/include/3ds/romfs.h \
- /Users/CommonFiles/ASCIIJump/ASCIIJump3DS/source/sound.h \
  /Users/CommonFiles/ASCIIJump/ASCIIJump3DS/source/level.h
 
 /Users/CommonFiles/ASCIIJump/ASCIIJump3DS/source/utils.h:
@@ -169,7 +168,5 @@ main.o: /Users/CommonFiles/ASCIIJump/ASCIIJump3DS/source/main.cpp \
 /opt/devkitPro/libctru/include/3ds/sdmc.h:
 
 /opt/devkitPro/libctru/include/3ds/romfs.h:
-
-/Users/CommonFiles/ASCIIJump/ASCIIJump3DS/source/sound.h:
 
 /Users/CommonFiles/ASCIIJump/ASCIIJump3DS/source/level.h:
