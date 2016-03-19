@@ -43,7 +43,7 @@
 //	  Height: 240 pixels / 30 chars (8px char height)
 // 3DS Bottom Screen Dimensions:
 //     Width: 320 pixels / 40 chars (8px char width)
-//    Height: Same as Top Screen
+//    Height: 240 pixels / 30 chars (8px char height)
 
 int main() {
 	gfxInitDefault();
@@ -54,9 +54,9 @@ int main() {
 	APT_CheckNew3DS(&consoletype);
 	//Loading screen
 	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n               Console Type: %s\n                ASCIIJump for 3DS", consoletype ? "New3DS" : "Old3DS");
-	hidScanInput();
-	u32 dDown = hidKeysDown();
-	u32 dHeld = hidKeysHeld();
+	//hidScanInput();
+	//u32 dDown = hidKeysDown();
+	//u32 dHeld = hidKeysHeld();
 	#ifdef __DEBUG
 	printf("\n                 Debug mode is on");
 	#endif
@@ -103,9 +103,9 @@ int main() {
 	#ifndef __LUA_SOUND_
 		audio_stop();
 		audio_play(&sound1, true);
-		#else
-		void *wav = (void*)"/3ds/ASCIIJump3DS/data/background_loop.wav";
-		streamWAV_CSND(wav);
+		//#else
+		//void *wav = (void*)"/3ds/ASCIIJump3DS/data/background_loop.wav";
+		//streamWAV_CSND(wav);
 		#endif
 		//The menu
 		char * levtext = (char*)malloc(40);
@@ -174,14 +174,16 @@ int main() {
 		//printf("Press start now to exit.\n");
 		hidScanInput();
 		u32 kDown = hidKeysDown();
-		bool cont = true;
+		bool cont = false;
 		do {
     		hidScanInput();
 			kDown = hidKeysDown();
 			if (kDown) {
 				if (kDown & KEY_START) goto End;
-				else if (kDown & KEY_RIGHT) {incIntWithMax(leveln, maxlev); cont = false;}
-				else if (kDown & KEY_LEFT) {decIntWithMax(leveln, maxlev); cont = false;}
+				else if (kDown & KEY_RIGHT) {incIntWithMax(leveln, maxlev); break;}
+				else if (kDown & KEY_LEFT) {decIntWithMax(leveln, maxlev); break;}
+				else if (kDown & KEY_R) {incIntWithMax(leveln, maxlev); break;}
+				else if (kDown & KEY_L) {decIntWithMax(leveln, maxlev); break;}
 				else if (kDown & KEY_A) {consoleClear(); printf("\n\n\n\n\n\n\n\n\n\n     /|%s|\\\n\
 	 / |                                   | \\\n\
    /  |    __________________________     |  \\\n\
@@ -190,9 +192,10 @@ int main() {
   \\   |   |%s|%d%% |   /\n\
    \\  |   ______________________________  |  /\n\
     \\ |  ||||||||||||||Go!||||||||||||||| | /\n\
-	  \\|  |______________________________| |/\n", levtext, nmtext, nmscore[leveln], pmtext, pmscore[leveln]); runLevel(leveln); cont = false;}
+	  \\|  |______________________________| |/\n", levtext, nmtext, nmscore[leveln], pmtext, pmscore[leveln]); cont = true; break;}
 			}
-		} while (cont);
+		} while (true);
+		if (cont) runLevel(leveln);
 	}
 	End:
 	debugPrint("Exiting...");

@@ -14,14 +14,14 @@
 #endif
 #include <3ds.h>
 #include <3ds/services/csnd.h>
-//#define __LUA_SOUND_ // is currently unsafe
+#define __LUA_SOUND_ // is currently unsafe, now used to turn sound off
 //#define __DEBUG // will enable debugPrint() --v--
 
 void debugPrint(const char * debugText); // this function
 #ifndef __LUA_SOUND_
 #include "sound.h"
-#else
-#include "luaSound.hpp"
+//#else
+//#include "luaSound.hpp"
 #endif
 PrintConsole screen, debug;
 std::string scorefile[8];

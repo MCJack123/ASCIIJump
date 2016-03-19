@@ -2,9 +2,11 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <sstream>
 #ifndef __ASCII3DS_UTILS_H_
 #include "utils.h"
 #endif
+#define BOOL_STRING(a) (a)?"true":"false"
 
 // 3DS Top Screen Dimensions:
 //     Width: 400 pixels / 50 chars (8px char width)
@@ -15,7 +17,7 @@
 
 std::string level_map[4][8];
 std::map<std::string, int> levn;
-float ldel = 1 / 8;
+float ldel = 0.090909;
 std::vector<char *> cube = {"----", "|-||", "||-|", "----"};
 
 void registerLevel(int levid, std::string f8, std::string f7, std::string f6, std::string f5, std::string f4, std::string f3, std::string f2, std::string f1) {	// This will make it easier to put levels in & adds portability.
@@ -39,9 +41,9 @@ void levelInit() {
 	i = 0;
 	// Now the fun part: making the level layouts. I am going to write multi-line for ease of use.
 	registerLevel(0,\
-"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000--0000000--000000000XXXX0000000000000000000000000000000000000000000000000000000000000X0000DDDDDDDDDDDDDD00",\
-"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000-0000000000XXXX00000XXXX00000000----0000000X0000000000000000000000000000000000000000000000000-0000000000000DDDDDD00000",\
-"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000-00000000DDDDDDDDDDDDDDDDDDDDDDDD0000000000DDDDD000000000000000000000000000000000000000000000-0000000000000000000000000000",\
+"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000__0000000__000000000XXXX0000000000000000000000000000000000000000000000000000000000000X0000DDDDDDDDDDDDDD00",\
+"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000XXXX00000XXXX00000000----0000000X0000000000000000000000000000000000000000000000000-0000000000000DDDDDD00000",\
+"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000-000-0000DDDDDDDDDDDDDDDDDDDDDDDD0000000000DDDDD000000000000000000000000000000000000000000000-0000000000000000000000000000",\
 "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000-00000000000000DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDX00000000000000X0000000000000000000000000-00000000000000000000000000000000",\
 "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000-000000000000000000DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD00----0000000X0000000000000-0000000000000DDDDDDDDDDDDDDDDDD00000",\
 "0000000000000000000000000000000000000000000000000000000000B000000000000000000000000000000000000000000000000000000000000X000000000-0000000000000000000000DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD00000000000-------000000000-000000000000000000000000DDDDDDDDDDDD0000",\
@@ -62,6 +64,7 @@ std::tuple<std::vector<const char *>, bool> convertCharToCube(char charToCube) {
 	else if (charToCube == '/') {retvec = {"   /", "  /|", " / |", "/  |"}; willKill = false;}
 	else if (charToCube == 'F') {retvec = {"    ", "    ", "    ", "    "}; willKill = false;}
 	else if (charToCube == '0') {retvec = {"    ", "    ", "    ", "    "}; willKill = false;}
+	else if (charToCube == '_') {retvec = {"    ", "    ", "----", "|__|"}; willKill = false;}
 	else {retvec = {"none", "none", "none", "none"}; willKill = false; debugPrint("Unrecognized block!"); unrec_blocks++;}
 	return std::make_tuple(retvec, willKill);
 }
@@ -104,14 +107,15 @@ void runLevel(int levelid) {
 	// This is it, the main loop!
 	int attempts = 1;
 	int y = 0;
-	int y_orig;
+	int y_orig = 0;
 	bool jump = false;
     bool falling = false;
-	int percentage;
-	int highscore = nmscore[levelid];
+	std::string attemptss = "1";
+	//int percentage;
+	//int highscore = nmscore[levelid];
 	for (int x = 0; (true); x++) {
-		if (r1[x+1] == 'F') {printf("You win!"); sleep(3); break;}
-		if (y > 7) {y = 0; debugPrint("Y is greater than 7!");}
+		if (r1[x+11] == 'F') {printf("You win!"); sleep(3); break;}
+		//if (y > 7) {y = 0; debugPrint("Y is greater than 7!");}
 		char * terminal = (char*)malloc(2000);
 		{sprintf(terminal, "%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s",\
 (y==7 ? cube[2] : std::get<0>(convertCharToCube(r8[x]))[2]),\
@@ -139,17 +143,17 @@ std::get<0>(convertCharToCube(r8[x+9]))[3],\
 std::get<0>(convertCharToCube(r8[x+10]))[3],\
 std::get<0>(convertCharToCube(r8[x+11]))[3],\
 (y==6 ? cube[0] : std::get<0>(convertCharToCube(r7[x]))[0]),\
-std::get<0>(convertCharToCube(r7[x+1]))[0],\
-std::get<0>(convertCharToCube(r7[x+2]))[0],\
-std::get<0>(convertCharToCube(r7[x+3]))[0],\
-std::get<0>(convertCharToCube(r7[x+4]))[0],\
-std::get<0>(convertCharToCube(r7[x+5]))[0],\
-std::get<0>(convertCharToCube(r7[x+6]))[0],\
-std::get<0>(convertCharToCube(r7[x+7]))[0],\
-std::get<0>(convertCharToCube(r7[x+8]))[0],\
-std::get<0>(convertCharToCube(r7[x+9]))[0],\
-std::get<0>(convertCharToCube(r7[x+10]))[0],\
-std::get<0>(convertCharToCube(r7[x+11]))[0],\
+(x<=6 ? "A" : std::get<0>(convertCharToCube(r7[x+1]))[0]),\
+(x<=6 ? "t" : std::get<0>(convertCharToCube(r7[x+2]))[0]),\
+(x<=6 ? "t" : std::get<0>(convertCharToCube(r7[x+3]))[0]),\
+(x<=6 ? "e" : std::get<0>(convertCharToCube(r7[x+4]))[0]),\
+(x<=6 ? "m" : std::get<0>(convertCharToCube(r7[x+5]))[0]),\
+(x<=6 ? "p" : std::get<0>(convertCharToCube(r7[x+6]))[0]),\
+(x<=6 ? "t" : std::get<0>(convertCharToCube(r7[x+7]))[0]),\
+(x<=6 ? " " : std::get<0>(convertCharToCube(r7[x+8]))[0]),\
+(x<=6 ? attemptss.c_str() : std::get<0>(convertCharToCube(r7[x+9]))[0]),\
+(attempts > 9 ? "" : std::get<0>(convertCharToCube(r7[x+10]))[0]),\
+(attempts > 99 ? "" : std::get<0>(convertCharToCube(r7[x+11]))[0]),\
 (y==6 ? cube[1] : std::get<0>(convertCharToCube(r7[x]))[1]),\
 std::get<0>(convertCharToCube(r7[x+1]))[1],\
 std::get<0>(convertCharToCube(r7[x+2]))[1],\
@@ -474,7 +478,7 @@ std::get<0>(convertCharToCube(r1[x+8]))[3],\
 std::get<0>(convertCharToCube(r1[x+9]))[3],\
 std::get<0>(convertCharToCube(r1[x+10]))[3],\
 std::get<0>(convertCharToCube(r1[x+11]))[3]);} // Prints the squares
-		sleep(.1);
+		sleep(.01);
 		consoleClear();
 		printf(terminal);
 		#ifdef __DEBUG
@@ -484,13 +488,14 @@ std::get<0>(convertCharToCube(r1[x+11]))[3]);} // Prints the squares
 		consoleSelect(&screen);
 		}
 		consoleSelect(&debug);
-		printf("X: %d\tY: %d\n", x, y);
+		printf("X: %d\tY: %d\tFall: %s\tJump: %s\n", x, y, BOOL_STRING(falling), BOOL_STRING(jump));
 		consoleSelect(&screen);
 		#endif
 		unrec_blocks = 0;
-		sleep(.1);
-		if ((std::get<1>(convertCharToCube(ra[y-1][x])) && !jump) || (ra[y][x+1] != '0')) {
-			attempts++;
+		if (((std::get<1>(convertCharToCube(ra[y][x])) && !jump)/* player on spike */ || (ra[y][x] != '0'))/* player in block */ && y < 7) {
+			std::stringstream ss;
+			ss<<(++attempts);
+			attemptss = ss.str();
 			x = 0;
 			y = 0;
 			jump = false;
@@ -498,7 +503,7 @@ std::get<0>(convertCharToCube(r1[x+11]))[3]);} // Prints the squares
 			#ifndef __LUA_SOUND_
 			audio_stop();
 			#endif
-			printf("You died!");
+			//printf("You died!");
 			sleep(1);
 			#ifndef __LUA_SOUND_
 			audio_play(&sound1, false);
@@ -508,11 +513,11 @@ std::get<0>(convertCharToCube(r1[x+11]))[3]);} // Prints the squares
 		u32 bDown = hidKeysDown();
 		u32 bHeld = hidKeysHeld();
 		if ((bDown | bHeld) & KEY_START) break;
-		if (bDown | bHeld && !jump && !falling) {jump = true; y_orig = y++;}
-		else if (jump && y == 1) y = 2;
-        else if (jump && y == 2) {jump = false; falling = true;}
-        else if (!jump && /*ra[y-1][x] != ' ' && */ra[y-1][x+1] == '0' && y > 0) {y--; falling = true;}
-        else if (!(!jump && /*ra[y-1][x] != ' ' && */ra[y-1][x+1] == '0' && y > 0)) {falling = false;}
+		if ((bDown | bHeld) && !jump && !falling && !std::get<1>(convertCharToCube(ra[y-1][x]))) {jump = true; y_orig = y++;}
+		else if (jump && y == y_orig + 1) {y++; jump = false; falling = true;}
+        else if (jump && y == y_orig + 2) {jump = false; falling = true;}
+        else if (!jump && /*ra[y-1][x] != ' ' && */(ra[y-1][x+1] == '0' || std::get<1>(convertCharToCube(ra[y-1][x+1]))) && y > 0 && (ra[y-1][x] == '0' || std::get<1>(convertCharToCube(ra[y-1][x])))) {y--; falling = true;}
+        else if (!(!jump && /*ra[y-1][x] != ' ' && */(ra[y-1][x+1] == '0' || std::get<1>(convertCharToCube(ra[y-1][x+1]))) && y > 0 && (ra[y-1][x] == '0' || std::get<1>(convertCharToCube(ra[y-1][x]))))) {falling = false;}
 		//while (percentage < 100) {
 		//	if (((r1.size() - 1) / 100) * percentage >= x) break;
 		//	percentage++;
@@ -523,7 +528,7 @@ std::get<0>(convertCharToCube(r1[x+11]))[3]);} // Prints the squares
 	audio_stop();
 	#endif
 	clearAll();
-	nmscore[levelid] = highscore;
+	//nmscore[levelid] = highscore;
 	/*std::ofstream outf;
 	outf.open("data/scores.txt", std::fstream::trunc);
 	bool m;
