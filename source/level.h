@@ -41,14 +41,14 @@ void levelInit() {
 	i = 0;
 	// Now the fun part: making the level layouts. I am going to write multi-line for ease of use.
 	registerLevel(0,\
-"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000__0000000__000000000XXXX0000000000000000000000000000000000000000000000000000000000000X0000DDDDDDDDDDDDDD00",\
-"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000XXXX00000XXXX00000000----0000000X0000000000000000000000000000000000000000000000000-0000000000000DDDDDD00000",\
-"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000-000-0000DDDDDDDDDDDDDDDDDDDDDDDD0000000000DDDDD000000000000000000000000000000000000000000000-0000000000000000000000000000",\
-"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000-00000000000000DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDX00000000000000X0000000000000000000000000-00000000000000000000000000000000",\
-"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000-000000000000000000DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD00----0000000X0000000000000-0000000000000DDDDDDDDDDDDDDDDDD00000",\
-"0000000000000000000000000000000000000000000000000000000000B000000000000000000000000000000000000000000000000000000000000X000000000-0000000000000000000000DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD00000000000-------000000000-000000000000000000000000DDDDDDDDDDDD0000",\
-"000000000000000000000000000000000000000000000000000000B000B00000000000000000000000000000000000000000000X00000000DDDDDDDDDDDDDD00000000000000000000000000DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD0000000000000000000-----0000000000000000000000000000DDDDDDDDDDDDD000",\
-"00000000000000000B00000000000000xX00000000000000XXBsssBsssBX00000000000000000000XX00000DDDDDDDDsssDDDDDDDDDDDsssDDDDDDDDDDDDDDssssssssssssssssssssssssssDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDssssssssssssssssssssssssssssssssssssssssssssssssssssDDDDDDDDDDDDDD00F");
+"                                                                                                                                                             __       __         XXXX                                                             X    DDDDDDDDDDDDDD  ",\
+"                                                                                                                                                            XXXX     XXXX        ----       X                                                 -             DDDDDD     ",\
+"                                                                                                                                             -   -    DDDDDDDDDDDDDDDDDDDDDDDD          DDDDD                                             -                            ",\
+"                                                                                                                                         -              DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDX              X                         -                                ",\
+"                                                                                                                                     -                  DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD  ----       X             -             DDDDDDDDDDDDDDDDDD     ",\
+"                                                          B                                                            X         -                      DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD           -------         -                        DDDDDDDDDDDD    ",\
+"                                                      B   B                                            X        DDDDDDDDDDDDDD                          DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD                   -----                            DDDDDDDDDDDDD   ",\
+"                 B              xX              XXBsssBsssBX                    XX     DDDDDDDDsssDDDDDDDDDDDsssDDDDDDDDDDDDDDssssssssssssssssssssssssssDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDssssssssssssssssssssssssssssssssssssssssssssssssssssDDDDDDDDDDDDDD  F");
 	registerLevel(1, "", "", "", "", "", "", "", "C");
 	registerLevel(2, "", "", "", "", "", "", "", "C");
 	registerLevel(3, "", "", "", "", "", "", "", "C");
@@ -66,7 +66,7 @@ std::tuple<std::vector<const char *>, bool> convertCharToCube(char charToCube) {
 	else if (charToCube == '\\') {retvec = {"\\   ", "|\\  ", "| \\ ", "|  \\"}; willKill = false;}
 	else if (charToCube == '/') {retvec = {"   /", "  /|", " / |", "/  |"}; willKill = false;}
 	else if (charToCube == 'F') {retvec = {"    ", "    ", "    ", "    "}; willKill = false;}
-	else if (charToCube == '0') {retvec = {"    ", "    ", "    ", "    "}; willKill = false;}
+	else if (charToCube == ' ') {retvec = {"    ", "    ", "    ", "    "}; willKill = false;}
 	else if (charToCube == '_') {retvec = {"    ", "    ", "----", "|__|"}; willKill = false;}
 	else {retvec = {"none", "none", "none", "none"}; willKill = false; debugPrint("Unrecognized block!"); unrec_blocks++;}
 	return std::make_tuple(retvec, willKill);
@@ -496,7 +496,7 @@ std::get<0>(convertCharToCube(r1[x+11]))[3]);} // Prints the squares
 		consoleSelect(&screen);
 		#endif
 		unrec_blocks = 0;
-		if (((std::get<1>(convertCharToCube(ra[y][x])) && !jump)/* player on spike */ || (ra[y][x] != '0'))/* player in block */ && y < 7) {
+		if (((std::get<1>(convertCharToCube(ra[y][x])) && !jump)/* player on spike */ || (ra[y][x] != ' '))/* player in block */ && y < 7) {
 			std::stringstream ss;
 			ss<<(++attempts);
 			attemptss = ss.str();
@@ -520,10 +520,10 @@ std::get<0>(convertCharToCube(r1[x+11]))[3]);} // Prints the squares
 		if ((bDown | bHeld) && !jump && !falling && !std::get<1>(convertCharToCube(ra[y-1][x]))) {jump = true; y_orig = y++;}
 		else if (jump && y == y_orig + 1) {y++; jump = false; falling = true;}
         else if (jump && y == y_orig + 2) {jump = false; falling = true;}
-        else if (!jump && /*ra[y-1][x] != ' ' && */(ra[y-1][x+1] == '0' || std::get<1>(convertCharToCube(ra[y-1][x+1]))) && y > 0 && (ra[y-1][x] == '0' || std::get<1>(convertCharToCube(ra[y-1][x])))) {y--; falling = true;}
-        else if (!(!jump && /*ra[y-1][x] != ' ' && */(ra[y-1][x+1] == '0' || std::get<1>(convertCharToCube(ra[y-1][x+1]))) && y > 0 && (ra[y-1][x] == '0' || std::get<1>(convertCharToCube(ra[y-1][x]))))) {falling = false;}
-		//while (percentage < 100) {
-		//	if (((r1.size() - 1) / 100) * percentage >= x) break;
+        else if (!jump && /*ra[y-1][x] != ' ' && */(ra[y-1][x+1] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x+1]))) && y > 0 && (ra[y-1][x] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x])))) {y--; falling = true;}
+        else if (!(!jump && /*ra[y-1][x] != ' ' && */(ra[y-1][x+1] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x+1]))) && y > 0 && (ra[y-1][x] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x]))))) {falling = false;}
+		//while (percentage < 1  ) {
+		//	if (((r1.size() - 1) / 1  ) * percentage >= x) break;
 		//	percentage++;
 		//}
 		sleep(ldel);
