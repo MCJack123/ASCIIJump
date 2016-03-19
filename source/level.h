@@ -75,7 +75,7 @@ std::tuple<std::vector<const char *>, bool> convertCharToCube(char charToCube) {
 // Now, let's actually make the game!
 void runLevel(int levelid) {
 	// First, set up the music
-	if (level_map[levelid][7] == "C") {printf("Coming soon!"); sleep(1); return;}
+	if (level_map[levelid][0] == "C") {printf("Coming soon!"); sleep(1); return;}
 	consoleSelect(&screen);
 	sleep(1);
 	debugPrint("Loading song...");

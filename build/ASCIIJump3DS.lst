@@ -40,79 +40,79 @@
 00100324 000000bc T registerLevel(int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)
 001003e0 00000870 T levelInit()
 00100c50 000002a4 T convertCharToCube(char)
-00100ef4 0000a134 T runLevel(int)
-0010b028 T initSystem
-0010b06c T __ctru_exit
-0010b08c t .udivsi3_skip_div0_test
-0010b08c T __aeabi_uidiv
-0010b08c 000001ec T __udivsi3
-0010b278 00000020 T __aeabi_uidivmod
-0010b298 T __aeabi_idiv
-0010b298 00000220 T __divsi3
-0010b2a0 t .divsi3_skip_div0_test
-0010b4b8 00000020 T __aeabi_idivmod
-0010b4d8 00000004 W __aeabi_idiv0
-0010b4d8 00000004 W __aeabi_ldiv0
-0010b4dc T __aeabi_uldivmod
-0010b518 00000128 T __udivmoddi4
-0010b640 00000018 t selfrel_offset31
-0010b658 00000094 t search_EIT_table
-0010b6ec 00000040 t __gnu_unwind_get_pr_addr
-0010b72c 00000124 t get_eit_entry
-0010b850 00000088 t restore_non_core_regs
-0010b8d8 00000014 t _Unwind_decode_typeinfo_ptr.isra.0
-0010b8ec 00000008 t __gnu_unwind_24bit.isra.1
-0010b8f4 00000004 t _Unwind_DebugHook
-0010b8f8 00000068 t unwind_phase2
-0010b960 00000154 t unwind_phase2_forced
-0010bab4 00000008 T _Unwind_GetCFA
-0010babc 000000a8 T __gnu_Unwind_RaiseException
-0010bb64 00000024 T __gnu_Unwind_ForcedUnwind
-0010bb88 00000074 T __gnu_Unwind_Resume
-0010bbfc 00000020 T __gnu_Unwind_Resume_or_Rethrow
-0010bc1c 00000004 T _Unwind_Complete
-0010bc20 00000018 T _Unwind_DeleteException
-0010bc38 0000005c T _Unwind_VRS_Get
-0010bc94 0000002c t _Unwind_GetGR
-0010bcc0 0000005c T _Unwind_VRS_Set
-0010bd1c 0000002c t _Unwind_SetGR
-0010bd48 000000c0 T __gnu_Unwind_Backtrace
-0010be08 00000430 t __gnu_unwind_pr_common
-0010c238 00000008 T __aeabi_unwind_cpp_pr0
-0010c240 00000008 W __aeabi_unwind_cpp_pr1
-0010c248 00000008 W __aeabi_unwind_cpp_pr2
-0010c250 000003dc T _Unwind_VRS_Pop
-0010c62c 00000014 T __restore_core_regs
-0010c62c 00000014 T restore_core_regs
-0010c640 T __gnu_Unwind_Restore_VFP
-0010c648 T __gnu_Unwind_Save_VFP
-0010c650 T __gnu_Unwind_Restore_VFP_D
-0010c658 T __gnu_Unwind_Save_VFP_D
-0010c660 T __gnu_Unwind_Restore_VFP_D_16_to_31
-0010c668 T __gnu_Unwind_Save_VFP_D_16_to_31
-0010c670 T __gnu_Unwind_Restore_WMMXD
-0010c6b4 T __gnu_Unwind_Save_WMMXD
-0010c6f8 T __gnu_Unwind_Restore_WMMXC
-0010c70c T __gnu_Unwind_Save_WMMXC
-0010c720 00000024 T _Unwind_RaiseException
-0010c720 00000024 T ___Unwind_RaiseException
-0010c744 00000024 T _Unwind_Resume
-0010c744 00000024 T ___Unwind_Resume
-0010c768 00000024 T _Unwind_Resume_or_Rethrow
-0010c768 00000024 T ___Unwind_Resume_or_Rethrow
-0010c78c 00000024 T _Unwind_ForcedUnwind
-0010c78c 00000024 T ___Unwind_ForcedUnwind
-0010c7b0 00000024 T _Unwind_Backtrace
-0010c7b0 00000024 T ___Unwind_Backtrace
-0010c7d4 00000060 t next_unwind_byte
-0010c834 0000002c t _Unwind_GetGR.constprop.0
-0010c860 00000004 t unwind_UCB_from_context
-0010c864 000003ac T __gnu_unwind_execute
-0010cc10 00000048 T __gnu_unwind_frame
-0010cc58 00000010 T _Unwind_GetRegionStart
-0010cc68 0000001c T _Unwind_GetLanguageSpecificData
-0010cc84 00000008 T _Unwind_GetTextRelBase
-0010cc8c 00000008 T _Unwind_GetDataRelBase
+00100ef4 0000a13c T runLevel(int)
+0010b030 T initSystem
+0010b074 T __ctru_exit
+0010b094 t .udivsi3_skip_div0_test
+0010b094 T __aeabi_uidiv
+0010b094 000001ec T __udivsi3
+0010b280 00000020 T __aeabi_uidivmod
+0010b2a0 T __aeabi_idiv
+0010b2a0 00000220 T __divsi3
+0010b2a8 t .divsi3_skip_div0_test
+0010b4c0 00000020 T __aeabi_idivmod
+0010b4e0 00000004 W __aeabi_idiv0
+0010b4e0 00000004 W __aeabi_ldiv0
+0010b4e4 T __aeabi_uldivmod
+0010b520 00000128 T __udivmoddi4
+0010b648 00000018 t selfrel_offset31
+0010b660 00000094 t search_EIT_table
+0010b6f4 00000040 t __gnu_unwind_get_pr_addr
+0010b734 00000124 t get_eit_entry
+0010b858 00000088 t restore_non_core_regs
+0010b8e0 00000014 t _Unwind_decode_typeinfo_ptr.isra.0
+0010b8f4 00000008 t __gnu_unwind_24bit.isra.1
+0010b8fc 00000004 t _Unwind_DebugHook
+0010b900 00000068 t unwind_phase2
+0010b968 00000154 t unwind_phase2_forced
+0010babc 00000008 T _Unwind_GetCFA
+0010bac4 000000a8 T __gnu_Unwind_RaiseException
+0010bb6c 00000024 T __gnu_Unwind_ForcedUnwind
+0010bb90 00000074 T __gnu_Unwind_Resume
+0010bc04 00000020 T __gnu_Unwind_Resume_or_Rethrow
+0010bc24 00000004 T _Unwind_Complete
+0010bc28 00000018 T _Unwind_DeleteException
+0010bc40 0000005c T _Unwind_VRS_Get
+0010bc9c 0000002c t _Unwind_GetGR
+0010bcc8 0000005c T _Unwind_VRS_Set
+0010bd24 0000002c t _Unwind_SetGR
+0010bd50 000000c0 T __gnu_Unwind_Backtrace
+0010be10 00000430 t __gnu_unwind_pr_common
+0010c240 00000008 T __aeabi_unwind_cpp_pr0
+0010c248 00000008 W __aeabi_unwind_cpp_pr1
+0010c250 00000008 W __aeabi_unwind_cpp_pr2
+0010c258 000003dc T _Unwind_VRS_Pop
+0010c634 00000014 T __restore_core_regs
+0010c634 00000014 T restore_core_regs
+0010c648 T __gnu_Unwind_Restore_VFP
+0010c650 T __gnu_Unwind_Save_VFP
+0010c658 T __gnu_Unwind_Restore_VFP_D
+0010c660 T __gnu_Unwind_Save_VFP_D
+0010c668 T __gnu_Unwind_Restore_VFP_D_16_to_31
+0010c670 T __gnu_Unwind_Save_VFP_D_16_to_31
+0010c678 T __gnu_Unwind_Restore_WMMXD
+0010c6bc T __gnu_Unwind_Save_WMMXD
+0010c700 T __gnu_Unwind_Restore_WMMXC
+0010c714 T __gnu_Unwind_Save_WMMXC
+0010c728 00000024 T _Unwind_RaiseException
+0010c728 00000024 T ___Unwind_RaiseException
+0010c74c 00000024 T _Unwind_Resume
+0010c74c 00000024 T ___Unwind_Resume
+0010c770 00000024 T _Unwind_Resume_or_Rethrow
+0010c770 00000024 T ___Unwind_Resume_or_Rethrow
+0010c794 00000024 T _Unwind_ForcedUnwind
+0010c794 00000024 T ___Unwind_ForcedUnwind
+0010c7b8 00000024 T _Unwind_Backtrace
+0010c7b8 00000024 T ___Unwind_Backtrace
+0010c7dc 00000060 t next_unwind_byte
+0010c83c 0000002c t _Unwind_GetGR.constprop.0
+0010c868 00000004 t unwind_UCB_from_context
+0010c86c 000003ac T __gnu_unwind_execute
+0010cc18 00000048 T __gnu_unwind_frame
+0010cc60 00000010 T _Unwind_GetRegionStart
+0010cc70 0000001c T _Unwind_GetLanguageSpecificData
+0010cc8c 00000008 T _Unwind_GetTextRelBase
+0010cc94 00000008 T _Unwind_GetDataRelBase
 0010cca8 00000390 T strcmp
 0010d040 00000008 t null_write
 0010d048 00000018 T setDefaultDevice
