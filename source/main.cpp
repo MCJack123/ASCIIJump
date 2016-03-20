@@ -79,6 +79,7 @@ int main() {
 	// Load the scores from scores.txt
 	debugPrint("Reading scores from sdmc://3ds/ASCIIJump3DS/data/scores.txt (yes, it is easy to hack the scores now)");
 	std::ifstream in;
+	if (!dirExists("data/")) printf("You are missing the data folder. Please put a folder named 'data' next to the executable, and put a 'scores.txt' file in with random scores.");
 	in.open("data/scores.txt");
 	int i = 0;
 	do {

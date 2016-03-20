@@ -1,5 +1,4 @@
 //The level definitions
-#include <string>
 #include <map>
 #include <vector>
 #include <sstream>
@@ -17,8 +16,8 @@
 
 std::string level_map[4][8];
 std::map<std::string, int> levn;
-float ldel = 0.090909;
-std::vector<char *> cube = {"----", "|-||", "||-|", "----"};
+float ldel = 0.083333;
+std::vector<const char *> cube = {"----", "|-||", "||-|", "----"};
 
 void registerLevel(int levid, std::string f8, std::string f7, std::string f6, std::string f5, std::string f4, std::string f3, std::string f2, std::string f1) {	// This will make it easier to put levels in & adds portability.
 	level_map[levid][0] = f1;
@@ -115,8 +114,9 @@ void runLevel(int levelid) {
 	bool jump = false;
     bool falling = false;
 	std::string attemptss = "1";
-	//int percentage;
-	//int highscore = nmscore[levelid];
+	int percentage = 0;
+	int xoh;
+	int highscore = nmscore[levelid];
 	for (int x = 0; (true); x++) {
 		if (r1[x+11] == 'F') {printf("You win!"); sleep(3); break;}
 		//if (y > 7) {y = 0; debugPrint("Y is greater than 7!");}
@@ -503,11 +503,11 @@ std::get<0>(convertCharToCube(r1[x+11]))[3]);} // Prints the squares
 			x = 0;
 			y = 0;
 			jump = false;
-			//if (percentage > nmscore[levelid]) {printf("High Score! %d%%", percentage); highscore = percentage;}
+			if (percentage > nmscore[levelid]) {printf("High Score! %d%%", percentage); highscore = percentage;}
 			#ifndef __LUA_SOUND_
 			audio_stop();
 			#endif
-			//printf("You died!");
+			printf("You died!");
 			sleep(1);
 			#ifndef __LUA_SOUND_
 			audio_play(&sound1, false);
@@ -522,18 +522,22 @@ std::get<0>(convertCharToCube(r1[x+11]))[3]);} // Prints the squares
         else if (jump && y == y_orig + 2) {jump = false; falling = true;}
         else if (!jump && /*ra[y-1][x] != ' ' && */(ra[y-1][x+1] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x+1]))) && y > 0 && (ra[y-1][x] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x])))) {y--; falling = true;}
         else if (!(!jump && /*ra[y-1][x] != ' ' && */(ra[y-1][x+1] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x+1]))) && y > 0 && (ra[y-1][x] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x]))))) {falling = false;}
-		//while (percentage < 1  ) {
-		//	if (((r1.size() - 1) / 1  ) * percentage >= x) break;
-		//	percentage++;
-		//}
+		xoh = x * 100;
+		percentage = xoh / r8.length();
+		#ifdef __DEBUG
+		consoleSelect(&debug);
+		printf("Percentage: %d\n", percentage);
+		consoleSelect(&screen);
+		#endif
 		sleep(ldel);
 	}
 	#ifndef __LUA_SOUND_
 	audio_stop();
 	#endif
 	clearAll();
-	//nmscore[levelid] = highscore;
-	/*std::ofstream outf;
+	nmscore[levelid] = highscore;
+	/*debugPrint("Outputting high score to file...");
+	std::ofstream outf;
 	outf.open("data/scores.txt", std::fstream::trunc);
 	bool m;
 	for (int l = 0; l <= 8; l++) {
