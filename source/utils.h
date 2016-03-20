@@ -1,6 +1,8 @@
 #ifndef __ASCII3DS_UTILS_H_
 #define __ASCII3DS_UTILS_H_
 #endif
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <cstdio>
 #include <cstring>
 #include <malloc.h>
@@ -69,4 +71,16 @@ void clearAll() {
 	consoleClear();
 	consoleSelect(&screen);
 	consoleClear();
+}
+
+int dirExists(const char *path)
+{
+    struct stat info;
+
+    if(stat( path, &info ) != 0)
+        return 0;
+    else if(info.st_mode & S_IFDIR)
+        return 1;
+    else
+        return 0;
 }
