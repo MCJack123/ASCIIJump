@@ -17,7 +17,7 @@
 #include <3ds.h>
 #include <3ds/services/csnd.h>
 #define __LUA_SOUND_ // is currently unsafe, now used to turn sound off
-//#define __DEBUG // will enable debugPrint() --v--
+#define __DEBUG // will enable debugPrint() --v--
 
 void debugPrint(const char * debugText); // this function
 #ifndef __LUA_SOUND_
