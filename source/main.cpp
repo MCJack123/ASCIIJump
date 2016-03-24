@@ -167,7 +167,7 @@ int main() {
  \\___/     \\___/   |_|      |_|  |_|\n");
 		consoleSelect(&screen);
 		consoleClear();
-		printf("\n\n\n\n\n\n\n\n\n\n     /|%s|\\\n\
+		printf("\n  ---\n |\\ /|\n | Y | Select Cube\n | | |\n  ---\n\n\n\n\n     /|%s|\\\n\
 	 / |                                   | \\\n\
    /  |    __________________________     |  \\\n\
   /   |   |%s|%d%% |   \\\n\
@@ -189,7 +189,15 @@ int main() {
 				else if (kDown & KEY_LEFT) {decIntWithMax(leveln, maxlev); break;}
 				else if (kDown & KEY_R) {incIntWithMax(leveln, maxlev); break;}
 				else if (kDown & KEY_L) {decIntWithMax(leveln, maxlev); break;}
-				else if (kDown & KEY_Y) {changeCube(); break;}
+				else if (kDown & KEY_Y) {consoleClear(); printf("\n  ---\n |\\-/|\n ||Y|| Select Cube\n |||||\n  ---\n\n\n\n\n     /|%s|\\\n\
+	 / |                                   | \\\n\
+   /  |    __________________________     |  \\\n\
+  /   |   |%s|%d%% |   \\\n\
+ |    |    __________________________     |    |\n\
+  \\   |   |%s|%d%% |   /\n\
+   \\  |   ______________________________  |  /\n\
+    \\ |  |             Go!              | | /\n\
+	  \\|  |______________________________| |/\n", levtext, nmtext, nmscore[leveln], pmtext, pmscore[leveln]); sleep(.2); changeCube(); break;}
 				else if (kDown & KEY_A) {consoleClear(); printf("\n\n\n\n\n\n\n\n\n\n     /|%s|\\\n\
 	 / |                                   | \\\n\
    /  |    __________________________     |  \\\n\

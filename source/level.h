@@ -80,7 +80,7 @@ int changeCube() {
 	consoleClear();
 	printf("Select a cube:\n\n");
 	int i = 0;
-	do {
+	do {	// yes, i know there is an easier way to do this, but i'm too lazy after doing all this work to go change it now
 		if (cubes.size() - i < 6) {
 			if (cubes.size() - i < 5) {
 				if (cubes.size() - i < 4) {
@@ -103,11 +103,11 @@ int changeCube() {
 					}
 				}
 				else {
-					if (cube - i == 0) printf("|%s|   %s    %s    %s\n|%s|   %s    %s    %s\n|%s|   %s    %s    %s\n|%s|   %s    %s    %s\n", cubes[i+0][0], cubes[i+0][1], cubes[i+0][2], cubes[i+0][3], cubes[i+1][0], cubes[i+1][1], cubes[i+1][2], cubes[i+1][3], cubes[i+2][0], cubes[i+2][1], cubes[i+2][2], cubes[i+2][3], cubes[i+3][0], cubes[i+3][1], cubes[i+3][2], cubes[i+3][3]);
-					else if (cube - i == 1) printf(" %s   |%s|   %s    %s\n %s   |%s|   %s    %s\n %s   |%s|   %s    %s\n %s   |%s|   %s    %s\n", cubes[i+0][0], cubes[i+0][1], cubes[i+0][2], cubes[i+0][3], cubes[i+1][0], cubes[i+1][1], cubes[i+1][2], cubes[i+1][3], cubes[i+2][0], cubes[i+2][1], cubes[i+2][2], cubes[i+2][3], cubes[i+3][0], cubes[i+3][1], cubes[i+3][2], cubes[i+3][3]);
-					else if (cube - i == 2) printf(" %s    %s   |%s|   %s\n %s    %s   |%s|   %s\n %s    %s   |%s|   %s\n %s    %s   |%s|   %s\n", cubes[i+0][0], cubes[i+0][1], cubes[i+0][2], cubes[i+0][3], cubes[i+1][0], cubes[i+1][1], cubes[i+1][2], cubes[i+1][3], cubes[i+2][0], cubes[i+2][1], cubes[i+2][2], cubes[i+2][3], cubes[i+3][0], cubes[i+3][1], cubes[i+3][2], cubes[i+3][3]);
-					else if (cube - i == 3) printf(" %s    %s    %s   |%s|\n %s    %s    %s   |%s|\n %s    %s    %s   |%s|\n %s    %s    %s   |%s|\n", cubes[i+0][0], cubes[i+0][1], cubes[i+0][2], cubes[i+0][3], cubes[i+1][0], cubes[i+1][1], cubes[i+1][2], cubes[i+1][3], cubes[i+2][0], cubes[i+2][1], cubes[i+2][2], cubes[i+2][3], cubes[i+3][0], cubes[i+3][1], cubes[i+3][2], cubes[i+3][3]);
-					else printf(" %s    %s    %s    %s\n %s    %s    %s    %s\n %s    %s    %s    %s\n %s    %s    %s    %s\n", cubes[i+0][0], cubes[i+0][1], cubes[i+0][2], cubes[i+0][3], cubes[i+1][0], cubes[i+1][1], cubes[i+1][2], cubes[i+1][3], cubes[i+2][0], cubes[i+2][1], cubes[i+2][2], cubes[i+2][3], cubes[i+3][0], cubes[i+3][1], cubes[i+3][2], cubes[i+3][3]);
+					if (cube - i == 0) printf("|%s|   %s    %s    %s\n|%s|   %s    %s    %s\n|%s|   %s    %s    %s\n|%s|   %s    %s    %s\n", cubes[i+0][0], cubes[i+1][0], cubes[i+2][0], cubes[i+3][0], cubes[i+0][1], cubes[i+1][1], cubes[i+2][1], cubes[i+3][1], cubes[i+0][2], cubes[i+1][2], cubes[i+2][2], cubes[i+3][2], cubes[i+0][3], cubes[i+1][3], cubes[i+2][3], cubes[i+3][3]);
+					else if (cube - i == 1) printf(" %s   |%s|   %s    %s\n %s   |%s|   %s    %s\n %s   |%s|   %s    %s\n %s   |%s|   %s    %s\n", cubes[i+0][0], cubes[i+1][0], cubes[i+2][0], cubes[i+3][0], cubes[i+0][1], cubes[i+1][1], cubes[i+2][1], cubes[i+3][1], cubes[i+0][2], cubes[i+1][2], cubes[i+2][2], cubes[i+3][2], cubes[i+0][3], cubes[i+1][3], cubes[i+2][3], cubes[i+3][3]);
+					else if (cube - i == 2) printf(" %s    %s   |%s|   %s\n %s    %s   |%s|   %s\n %s    %s   |%s|   %s\n %s    %s   |%s|   %s\n", cubes[i+0][0], cubes[i+1][0], cubes[i+2][0], cubes[i+3][0], cubes[i+0][1], cubes[i+1][1], cubes[i+2][1], cubes[i+3][1], cubes[i+0][2], cubes[i+1][2], cubes[i+2][2], cubes[i+3][2], cubes[i+0][3], cubes[i+1][3], cubes[i+2][3], cubes[i+3][3]);
+					else if (cube - i == 3) printf(" %s    %s    %s   |%s|\n %s    %s    %s   |%s|\n %s    %s    %s   |%s|\n %s    %s    %s   |%s|\n", cubes[i+0][0], cubes[i+1][0], cubes[i+2][0], cubes[i+3][0], cubes[i+0][1], cubes[i+1][1], cubes[i+2][1], cubes[i+3][1], cubes[i+0][2], cubes[i+1][2], cubes[i+2][2], cubes[i+3][2], cubes[i+0][3], cubes[i+1][3], cubes[i+2][3], cubes[i+3][3]);
+					else printf(" %s    %s    %s    %s\n %s    %s    %s    %s\n %s    %s    %s    %s\n %s    %s    %s    %s\n", cubes[i+0][0], cubes[i+1][0], cubes[i+2][0], cubes[i+3][0], cubes[i+0][1], cubes[i+1][1], cubes[i+2][1], cubes[i+3][1], cubes[i+0][2], cubes[i+1][2], cubes[i+2][2], cubes[i+3][2], cubes[i+0][3], cubes[i+1][3], cubes[i+2][3], cubes[i+3][3]);
 				}
 			}
 			else {
@@ -135,6 +135,7 @@ int changeCube() {
 		hidScanInput();
 		u32 nDown = hidKeysHeld();
 		if (nDown & KEY_B) return cube;
+		else if (nDown & KEY_A) return cube;
 		else if (nDown & KEY_RIGHT) {if (cube < (int) cubes.size() - 1) cube++; break;}
 		else if (nDown & KEY_LEFT) {if (cube > 0) cube--; break;}
 		else if (nDown & KEY_UP) {if (cube - 6 > 0) cube -= 6; break;}
@@ -142,10 +143,10 @@ int changeCube() {
 	}
 	#ifdef __DEBUG
 	consoleSelect(&debug);
-	printf("Cube selected: %d", cube);
+	printf("Cube selected: %d\n", cube);
 	consoleSelect(&screen);
 	#endif
-	sleep(.4);
+	sleep(.25);
 	}
 	FS_Archive core_out;
 	FS_Path core_path;
@@ -606,8 +607,10 @@ std::get<0>(convertCharToCube(r1[x+11]))[3]);} // Prints the squares
 		hidScanInput();
 		u32 bDown = hidKeysDown();
 		u32 bHeld = hidKeysHeld();
+		touchPosition touch;
+		hidTouchRead(&touch);
 		if ((bDown | bHeld) & KEY_START) break;
-		if ((bDown | bHeld) && !jump && !falling && !std::get<1>(convertCharToCube(ra[y-1][x]))) {jump = true; y_orig = y++;}
+		if (((bDown | bHeld) || (touch.px != 0 || touch.py != 0)) && !jump && !falling && !std::get<1>(convertCharToCube(ra[y-1][x]))) {jump = true; y_orig = y++;}
 		else if (jump && y == y_orig + 1) {y++; jump = false; falling = true;}
         else if (jump && y == y_orig + 2) {jump = false; falling = true;}
         else if (!jump && /*ra[y-1][x] != ' ' && */(ra[y-1][x+1] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x+1]))) && y > 0 && (ra[y-1][x] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x])))) {y--; falling = true;}
