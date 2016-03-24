@@ -20,14 +20,17 @@ A clone of Geometry Dash in plain text. This is the 3DS version.
   * F means level end
   * Space means air block
 * Percentage scores (they do not save to the scores file, though)
+* New: Cube customization
+ * Press Y to access the menu
+ * The icon previews look disgusting right now, but don't worry, the real ones are better!
+ * You can't save the cube you have, so you have to change it each play
 
 #### Non-features
 * Music (the code is not working)
-* Saving high scores
+* Saving high scores or cube
 * Practice mode
 * Different play modes (ship, UFO, ball)
 * Importing custom levels (soon)
-* Cube customization (also soon)
 * Cool death, high score, and finish screens
 
 ## Setup
@@ -37,5 +40,6 @@ Drop the 3dsx/cia/elf file into the destination, and place the data folder next 
   * (ASCIIJump3DS.smdh)
   * data/
     * scores.txt
+    * cube.txt
     * (background-loop.bin)
     * (level<x>.bin)
