@@ -51,6 +51,7 @@ int main() {
 	consoleInit(GFX_BOTTOM, &debug);
 	consoleSelect(&screen);
 	csndInit();
+	fsInit();
 	APT_CheckNew3DS(&consoletype);
 	//Loading screen
 	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n               Console Type: %s\n                ASCIIJump for 3DS", consoletype ? "New3DS" : "Old3DS");
@@ -88,6 +89,9 @@ int main() {
 		i++;
 	}
 	while (!(in.bad() || in.eof()));
+	in.close();
+	in.open("data/cube.txt");
+	in >> cube;
 	in.close();
 	debugPrint("Loading song...");
 	if (fexists("data/background_loop.bin")) {
@@ -185,6 +189,7 @@ int main() {
 				else if (kDown & KEY_LEFT) {decIntWithMax(leveln, maxlev); break;}
 				else if (kDown & KEY_R) {incIntWithMax(leveln, maxlev); break;}
 				else if (kDown & KEY_L) {decIntWithMax(leveln, maxlev); break;}
+				else if (kDown & KEY_Y) {changeCube(); break;}
 				else if (kDown & KEY_A) {consoleClear(); printf("\n\n\n\n\n\n\n\n\n\n     /|%s|\\\n\
 	 / |                                   | \\\n\
    /  |    __________________________     |  \\\n\
@@ -205,6 +210,7 @@ int main() {
 	#endif
 	csndExit();
 	gfxExit();
-	sleep(0.5);
+	fsExit();
+	sleep(.5);
 	return 0;
 }
