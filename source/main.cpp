@@ -167,7 +167,7 @@ int main() {
  \\___/     \\___/   |_|      |_|  |_|\n");
 		consoleSelect(&screen);
 		consoleClear();
-		printf("\n  ---\n |\\ /|\n | Y | Select Cube\n | | |\n  ---\n\n\n\n\n     /|%s|\\\n\
+		printf("\n  ---               ---\n |\\ /|             |\\ /|\n | Y | Select Cube | X | Custom Level\n | | |             |/ \\|\n  ---               ---\n\n\n\n\n     /|%s|\\\n\
 	 / |                                   | \\\n\
    /  |    __________________________     |  \\\n\
   /   |   |%s|%d%% |   \\\n\
@@ -179,7 +179,6 @@ int main() {
 		//printf("Press start now to exit.\n");
 		hidScanInput();
 		u32 kDown = hidKeysDown();
-		bool cont = false;
 		do {
     		hidScanInput();
 			kDown = hidKeysDown();
@@ -198,6 +197,7 @@ int main() {
    \\  |   ______________________________  |  /\n\
     \\ |  |             Go!              | | /\n\
 	  \\|  |______________________________| |/\n", levtext, nmtext, nmscore[leveln], pmtext, pmscore[leveln]); sleep(.2); changeCube(); break;}
+				else if (kDown & KEY_X) {chooseCustomLevel(); break;}
 				else if (kDown & KEY_A) {consoleClear(); printf("\n\n\n\n\n\n\n\n\n\n     /|%s|\\\n\
 	 / |                                   | \\\n\
    /  |    __________________________     |  \\\n\
@@ -206,10 +206,9 @@ int main() {
   \\   |   |%s|%d%% |   /\n\
    \\  |   ______________________________  |  /\n\
     \\ |  ||||||||||||||Go!||||||||||||||| | /\n\
-	  \\|  |______________________________| |/\n", levtext, nmtext, nmscore[leveln], pmtext, pmscore[leveln]); cont = true; break;}
+	  \\|  |______________________________| |/\n", levtext, nmtext, nmscore[leveln], pmtext, pmscore[leveln]); runLevel(leveln); break;}
 			}
 		} while (true);
-		if (cont) runLevel(leveln);
 	}
 	End:
 	debugPrint("Exiting...");

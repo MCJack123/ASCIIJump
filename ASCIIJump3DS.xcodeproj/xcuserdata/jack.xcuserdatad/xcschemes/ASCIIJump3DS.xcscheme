@@ -50,6 +50,15 @@
          runnableDebuggingMode = "0"
          FilePath = "/usr/local/Cellar/duck/4.7.3.18396/libexec/Contents/MacOS/duck">
       </PathRunnable>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "04BC34AD1C77D46000A32FD7"
+            BuildableName = "ASCIIJump3DS"
+            BlueprintName = "ASCIIJump3DS"
+            ReferencedContainer = "container:ASCIIJump3DS.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-e overwrite"
@@ -58,6 +67,10 @@
          <CommandLineArgument
             argument = "--upload ftp://10.0.1.8:5000/3ds/ASCIIJump3DS/ ASCIIJump3DS.3dsx ASCIIJump3DS.elf"
             isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--upload ftp://10.0.1.8:17491/3ds/ASCIIJump3DS/ ASCIIJump3DS.3dsx"
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>
