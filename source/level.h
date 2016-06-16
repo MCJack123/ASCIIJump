@@ -2,6 +2,7 @@
 #include <map>
 #include <vector>
 #include <sstream>
+#include <cstdarg>
 #ifndef __ASCII3DS_UTILS_H_
 #include "utils.h"
 #endif
@@ -14,21 +15,19 @@
 //     Width: 320 pixels / 40 chars (8px char width)
 //    Height: Same as Top Screen
 
-std::string level_map[5][8];
+std::string level_map[5][200]; // too much?
 std::map<std::string, int> levn;
 float ldel = 0.083333;
 int cube = 0;
 std::vector<std::vector<const char *> > cubes = {{"----","||-|","|-||","----"}, {"----","|[]|","|[]|","----"}, {"-][-","|=[|","|]=|","-][-"}, {"----","|][|","|LJ|","----"}};
 
-void registerLevel(int levid, std::string f8, std::string f7, std::string f6, std::string f5, std::string f4, std::string f3, std::string f2, std::string f1) {	// This will make it easier to put levels in & adds portability.
-	level_map[levid][0] = f1;
-	level_map[levid][1] = f2;
-	level_map[levid][2] = f3;
-	level_map[levid][3] = f4;
-	level_map[levid][4] = f5;
-	level_map[levid][5] = f6;
-	level_map[levid][6] = f7;
-	level_map[levid][7] = f8;
+void registerLevel(int levid, std::string fmt, ...) {	// This will make it easier to put levels in & adds portability. Arguments must be std::string.
+	va_list args;
+	std::string new_level[200];
+	va_start(args, fmt);
+	int count;
+	for (count = 0; count <= 200 && std::string(fmt) != "\0"; count++) new_level[count] = va_arg(args, std::string);
+	for (int cc = count, ccc = 0; cc >= 0; cc--, ccc++) level_map[levid][ccc] = new_level[cc];
 }
 
 void levelInit() {
@@ -70,6 +69,7 @@ std::tuple<std::vector<const char *>, bool, bool> convertCharToCube(char charToC
 	else if (charToCube == '^') {retvec = {"    ", "    ", "    ", "//\\\\"}; willKill = false; transparent = true;}
 	else if (charToCube == 'n') {retvec = {"    ", "    ", "    ", "/--\\"}; willKill = false; transparent = true;}
 	else if (charToCube == '_') {retvec = {"    ", "    ", "----", "|__|"}; willKill = false; transparent = false;}
+	else if (charToCube == '\0') {retvec = {"    ", "    ", "    ", "    "}; willKill = false; transparent = true;}
 	else {retvec = {"none", "none", "none", "none"}; willKill = false; debugPrint("Unrecognized block!"); unrec_blocks++; transparent = true;}
 	return std::make_tuple(retvec, willKill, transparent);
 }
@@ -182,28 +182,21 @@ void runLevel(int levelid) {
 	audio_play(&sound1, false);
 	#endif
 	
-	//Stats of GeometryJump:
-	// * 11 squares per second
-	// * Jumps are 4 squares long, 3 squares high
-	//ASCIIJump:
-	// Each square will be 4x4 (except the top row will be 2 tall)...
-	// ...so there will be 8 rows (of course) and 12 columns.
+	// Stats of GeometryJump:
+	//  * 11 squares per second
+	//  * Jumps are 4 squares long, 3 squares high
+	// ASCIIJump:
+	//  Each square will be 4x4 (except the top row will be 2 tall)...
+	//  ...so there will be 8 rows (of course) and 12 columns.
 	
 	// Just make it easy to access the level data
-	std::string r1 = level_map[levelid][0];
-	std::string r2 = level_map[levelid][1];
-	std::string r3 = level_map[levelid][2];
-	std::string r4 = level_map[levelid][3];
-	std::string r5 = level_map[levelid][4];
-	std::string r6 = level_map[levelid][5];
-	std::string r7 = level_map[levelid][6];
-	std::string r8 = level_map[levelid][7];
-	std::string ra[8] = level_map[levelid];
+	std::string ra[200] = level_map[levelid];
 	
 	// This is it, the main loop!
 	int attempts = 1;
 	int y = 0;
 	int y_orig = 0;
+	int y_showing = -4;
 	bool jump = false;
     bool falling = false;
 	bool jumpPad = false;
@@ -212,371 +205,18 @@ void runLevel(int levelid) {
 	int xoh;
 	int highscore = nmscore[levelid];
 	for (int x = 0; (true); x++) {
-		if (r1[x+11] == 'F') {printf("You win!"); sleep(3); break;}
+		if (ra[1][x+11] == 'F') {printf("You win!"); sleep(3); break;}
 		//if (y > 7) {y = 0; debugPrint("Y is greater than 7!");}
 		char * terminal = (char*)malloc(2000);
-		{sprintf(terminal, "%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s%s%s%s%s",\
-(y==7 ? cubes[cube][2] : std::get<0>(convertCharToCube(r8[x]))[2]),\
-std::get<0>(convertCharToCube(r8[x+1]))[2],\
-std::get<0>(convertCharToCube(r8[x+2]))[2],\
-std::get<0>(convertCharToCube(r8[x+3]))[2],\
-std::get<0>(convertCharToCube(r8[x+4]))[2],\
-std::get<0>(convertCharToCube(r8[x+5]))[2],\
-std::get<0>(convertCharToCube(r8[x+6]))[2],\
-std::get<0>(convertCharToCube(r8[x+7]))[2],\
-std::get<0>(convertCharToCube(r8[x+8]))[2],\
-std::get<0>(convertCharToCube(r8[x+9]))[2],\
-std::get<0>(convertCharToCube(r8[x+10]))[2],\
-std::get<0>(convertCharToCube(r8[x+11]))[2],\
-(y==7 ? cubes[cube][3] : std::get<0>(convertCharToCube(r8[x]))[3]),\
-std::get<0>(convertCharToCube(r8[x+1]))[3],\
-std::get<0>(convertCharToCube(r8[x+2]))[3],\
-std::get<0>(convertCharToCube(r8[x+3]))[3],\
-std::get<0>(convertCharToCube(r8[x+4]))[3],\
-std::get<0>(convertCharToCube(r8[x+5]))[3],\
-std::get<0>(convertCharToCube(r8[x+6]))[3],\
-std::get<0>(convertCharToCube(r8[x+7]))[3],\
-std::get<0>(convertCharToCube(r8[x+8]))[3],\
-std::get<0>(convertCharToCube(r8[x+9]))[3],\
-std::get<0>(convertCharToCube(r8[x+10]))[3],\
-std::get<0>(convertCharToCube(r8[x+11]))[3],\
-(y==6 ? cubes[cube][0] : std::get<0>(convertCharToCube(r7[x]))[0]),\
-(x<=6 ? "A" : std::get<0>(convertCharToCube(r7[x+1]))[0]),\
-(x<=6 ? "t" : std::get<0>(convertCharToCube(r7[x+2]))[0]),\
-(x<=6 ? "t" : std::get<0>(convertCharToCube(r7[x+3]))[0]),\
-(x<=6 ? "e" : std::get<0>(convertCharToCube(r7[x+4]))[0]),\
-(x<=6 ? "m" : std::get<0>(convertCharToCube(r7[x+5]))[0]),\
-(x<=6 ? "p" : std::get<0>(convertCharToCube(r7[x+6]))[0]),\
-(x<=6 ? "t" : std::get<0>(convertCharToCube(r7[x+7]))[0]),\
-(x<=6 ? " " : std::get<0>(convertCharToCube(r7[x+8]))[0]),\
-(x<=6 ? attemptss.c_str() : std::get<0>(convertCharToCube(r7[x+9]))[0]),\
-(attempts > 9 ? "" : std::get<0>(convertCharToCube(r7[x+10]))[0]),\
-(attempts > 99 ? "" : std::get<0>(convertCharToCube(r7[x+11]))[0]),\
-(y==6 ? cubes[cube][1] : std::get<0>(convertCharToCube(r7[x]))[1]),\
-std::get<0>(convertCharToCube(r7[x+1]))[1],\
-std::get<0>(convertCharToCube(r7[x+2]))[1],\
-std::get<0>(convertCharToCube(r7[x+3]))[1],\
-std::get<0>(convertCharToCube(r7[x+4]))[1],\
-std::get<0>(convertCharToCube(r7[x+5]))[1],\
-std::get<0>(convertCharToCube(r7[x+6]))[1],\
-std::get<0>(convertCharToCube(r7[x+7]))[1],\
-std::get<0>(convertCharToCube(r7[x+8]))[1],\
-std::get<0>(convertCharToCube(r7[x+9]))[1],\
-std::get<0>(convertCharToCube(r7[x+10]))[1],\
-std::get<0>(convertCharToCube(r7[x+11]))[1],\
-(y==6 ? cubes[cube][2] : std::get<0>(convertCharToCube(r7[x]))[2]),\
-std::get<0>(convertCharToCube(r7[x+1]))[2],\
-std::get<0>(convertCharToCube(r7[x+2]))[2],\
-std::get<0>(convertCharToCube(r7[x+3]))[2],\
-std::get<0>(convertCharToCube(r7[x+4]))[2],\
-std::get<0>(convertCharToCube(r7[x+5]))[2],\
-std::get<0>(convertCharToCube(r7[x+6]))[2],\
-std::get<0>(convertCharToCube(r7[x+7]))[2],\
-std::get<0>(convertCharToCube(r7[x+8]))[2],\
-std::get<0>(convertCharToCube(r7[x+9]))[2],\
-std::get<0>(convertCharToCube(r7[x+10]))[2],\
-std::get<0>(convertCharToCube(r7[x+11]))[2],\
-(y==6 ? cubes[cube][3] : std::get<0>(convertCharToCube(r7[x]))[3]),\
-std::get<0>(convertCharToCube(r7[x+1]))[3],\
-std::get<0>(convertCharToCube(r7[x+2]))[3],\
-std::get<0>(convertCharToCube(r7[x+3]))[3],\
-std::get<0>(convertCharToCube(r7[x+4]))[3],\
-std::get<0>(convertCharToCube(r7[x+5]))[3],\
-std::get<0>(convertCharToCube(r7[x+6]))[3],\
-std::get<0>(convertCharToCube(r7[x+7]))[3],\
-std::get<0>(convertCharToCube(r7[x+8]))[3],\
-std::get<0>(convertCharToCube(r7[x+9]))[3],\
-std::get<0>(convertCharToCube(r7[x+10]))[3],\
-std::get<0>(convertCharToCube(r7[x+11]))[3],\
-(y==5 ? cubes[cube][0] : std::get<0>(convertCharToCube(r6[x]))[0]),\
-std::get<0>(convertCharToCube(r6[x+1]))[0],\
-std::get<0>(convertCharToCube(r6[x+2]))[0],\
-std::get<0>(convertCharToCube(r6[x+3]))[0],\
-std::get<0>(convertCharToCube(r6[x+4]))[0],\
-std::get<0>(convertCharToCube(r6[x+5]))[0],\
-std::get<0>(convertCharToCube(r6[x+6]))[0],\
-std::get<0>(convertCharToCube(r6[x+7]))[0],\
-std::get<0>(convertCharToCube(r6[x+8]))[0],\
-std::get<0>(convertCharToCube(r6[x+9]))[0],\
-std::get<0>(convertCharToCube(r6[x+10]))[0],\
-std::get<0>(convertCharToCube(r6[x+11]))[0],\
-(y==5 ? cubes[cube][1] : std::get<0>(convertCharToCube(r6[x]))[1]),\
-std::get<0>(convertCharToCube(r6[x+1]))[1],\
-std::get<0>(convertCharToCube(r6[x+2]))[1],\
-std::get<0>(convertCharToCube(r6[x+3]))[1],\
-std::get<0>(convertCharToCube(r6[x+4]))[1],\
-std::get<0>(convertCharToCube(r6[x+5]))[1],\
-std::get<0>(convertCharToCube(r6[x+6]))[1],\
-std::get<0>(convertCharToCube(r6[x+7]))[1],\
-std::get<0>(convertCharToCube(r6[x+8]))[1],\
-std::get<0>(convertCharToCube(r6[x+9]))[1],\
-std::get<0>(convertCharToCube(r6[x+10]))[1],\
-std::get<0>(convertCharToCube(r6[x+11]))[1],\
-(y==5 ? cubes[cube][2] : std::get<0>(convertCharToCube(r6[x]))[2]),\
-std::get<0>(convertCharToCube(r6[x+1]))[2],\
-std::get<0>(convertCharToCube(r6[x+2]))[2],\
-std::get<0>(convertCharToCube(r6[x+3]))[2],\
-std::get<0>(convertCharToCube(r6[x+4]))[2],\
-std::get<0>(convertCharToCube(r6[x+5]))[2],\
-std::get<0>(convertCharToCube(r6[x+6]))[2],\
-std::get<0>(convertCharToCube(r6[x+7]))[2],\
-std::get<0>(convertCharToCube(r6[x+8]))[2],\
-std::get<0>(convertCharToCube(r6[x+9]))[2],\
-std::get<0>(convertCharToCube(r6[x+10]))[2],\
-std::get<0>(convertCharToCube(r6[x+11]))[2],\
-(y==5 ? cubes[cube][3] : std::get<0>(convertCharToCube(r6[x]))[3]),\
-std::get<0>(convertCharToCube(r6[x+1]))[3],\
-std::get<0>(convertCharToCube(r6[x+2]))[3],\
-std::get<0>(convertCharToCube(r6[x+3]))[3],\
-std::get<0>(convertCharToCube(r6[x+4]))[3],\
-std::get<0>(convertCharToCube(r6[x+5]))[3],\
-std::get<0>(convertCharToCube(r6[x+6]))[3],\
-std::get<0>(convertCharToCube(r6[x+7]))[3],\
-std::get<0>(convertCharToCube(r6[x+8]))[3],\
-std::get<0>(convertCharToCube(r6[x+9]))[3],\
-std::get<0>(convertCharToCube(r6[x+10]))[3],\
-std::get<0>(convertCharToCube(r6[x+11]))[3],\
-(y==4 ? cubes[cube][0] : std::get<0>(convertCharToCube(r5[x]))[0]),\
-std::get<0>(convertCharToCube(r5[x+1]))[0],\
-std::get<0>(convertCharToCube(r5[x+2]))[0],\
-std::get<0>(convertCharToCube(r5[x+3]))[0],\
-std::get<0>(convertCharToCube(r5[x+4]))[0],\
-std::get<0>(convertCharToCube(r5[x+5]))[0],\
-std::get<0>(convertCharToCube(r5[x+6]))[0],\
-std::get<0>(convertCharToCube(r5[x+7]))[0],\
-std::get<0>(convertCharToCube(r5[x+8]))[0],\
-std::get<0>(convertCharToCube(r5[x+9]))[0],\
-std::get<0>(convertCharToCube(r5[x+10]))[0],\
-std::get<0>(convertCharToCube(r5[x+11]))[0],\
-(y==4 ? cubes[cube][1] : std::get<0>(convertCharToCube(r5[x]))[1]),\
-std::get<0>(convertCharToCube(r5[x+1]))[1],\
-std::get<0>(convertCharToCube(r5[x+2]))[1],\
-std::get<0>(convertCharToCube(r5[x+3]))[1],\
-std::get<0>(convertCharToCube(r5[x+4]))[1],\
-std::get<0>(convertCharToCube(r5[x+5]))[1],\
-std::get<0>(convertCharToCube(r5[x+6]))[1],\
-std::get<0>(convertCharToCube(r5[x+7]))[1],\
-std::get<0>(convertCharToCube(r5[x+8]))[1],\
-std::get<0>(convertCharToCube(r5[x+9]))[1],\
-std::get<0>(convertCharToCube(r5[x+10]))[1],\
-std::get<0>(convertCharToCube(r5[x+11]))[1],\
-(y==4 ? cubes[cube][2] : std::get<0>(convertCharToCube(r5[x]))[2]),\
-std::get<0>(convertCharToCube(r5[x+1]))[2],\
-std::get<0>(convertCharToCube(r5[x+2]))[2],\
-std::get<0>(convertCharToCube(r5[x+3]))[2],\
-std::get<0>(convertCharToCube(r5[x+4]))[2],\
-std::get<0>(convertCharToCube(r5[x+5]))[2],\
-std::get<0>(convertCharToCube(r5[x+6]))[2],\
-std::get<0>(convertCharToCube(r5[x+7]))[2],\
-std::get<0>(convertCharToCube(r5[x+8]))[2],\
-std::get<0>(convertCharToCube(r5[x+9]))[2],\
-std::get<0>(convertCharToCube(r5[x+10]))[2],\
-std::get<0>(convertCharToCube(r5[x+11]))[2],\
-(y==4 ? cubes[cube][3] : std::get<0>(convertCharToCube(r5[x]))[3]),\
-std::get<0>(convertCharToCube(r5[x+1]))[3],\
-std::get<0>(convertCharToCube(r5[x+2]))[3],\
-std::get<0>(convertCharToCube(r5[x+3]))[3],\
-std::get<0>(convertCharToCube(r5[x+4]))[3],\
-std::get<0>(convertCharToCube(r5[x+5]))[3],\
-std::get<0>(convertCharToCube(r5[x+6]))[3],\
-std::get<0>(convertCharToCube(r5[x+7]))[3],\
-std::get<0>(convertCharToCube(r5[x+8]))[3],\
-std::get<0>(convertCharToCube(r5[x+9]))[3],\
-std::get<0>(convertCharToCube(r5[x+10]))[3],\
-std::get<0>(convertCharToCube(r5[x+11]))[3],\
-(y==3 ? cubes[cube][0] : std::get<0>(convertCharToCube(r4[x]))[0]),\
-std::get<0>(convertCharToCube(r4[x+1]))[0],\
-std::get<0>(convertCharToCube(r4[x+2]))[0],\
-std::get<0>(convertCharToCube(r4[x+3]))[0],\
-std::get<0>(convertCharToCube(r4[x+4]))[0],\
-std::get<0>(convertCharToCube(r4[x+5]))[0],\
-std::get<0>(convertCharToCube(r4[x+6]))[0],\
-std::get<0>(convertCharToCube(r4[x+7]))[0],\
-std::get<0>(convertCharToCube(r4[x+8]))[0],\
-std::get<0>(convertCharToCube(r4[x+9]))[0],\
-std::get<0>(convertCharToCube(r4[x+10]))[0],\
-std::get<0>(convertCharToCube(r4[x+11]))[0],\
-(y==3 ? cubes[cube][1] : std::get<0>(convertCharToCube(r4[x]))[1]),\
-std::get<0>(convertCharToCube(r4[x+1]))[1],\
-std::get<0>(convertCharToCube(r4[x+2]))[1],\
-std::get<0>(convertCharToCube(r4[x+3]))[1],\
-std::get<0>(convertCharToCube(r4[x+4]))[1],\
-std::get<0>(convertCharToCube(r4[x+5]))[1],\
-std::get<0>(convertCharToCube(r4[x+6]))[1],\
-std::get<0>(convertCharToCube(r4[x+7]))[1],\
-std::get<0>(convertCharToCube(r4[x+8]))[1],\
-std::get<0>(convertCharToCube(r4[x+9]))[1],\
-std::get<0>(convertCharToCube(r4[x+10]))[1],\
-std::get<0>(convertCharToCube(r4[x+11]))[1],\
-(y==3 ? cubes[cube][2] : std::get<0>(convertCharToCube(r4[x]))[2]),\
-std::get<0>(convertCharToCube(r4[x+1]))[2],\
-std::get<0>(convertCharToCube(r4[x+2]))[2],\
-std::get<0>(convertCharToCube(r4[x+3]))[2],\
-std::get<0>(convertCharToCube(r4[x+4]))[2],\
-std::get<0>(convertCharToCube(r4[x+5]))[2],\
-std::get<0>(convertCharToCube(r4[x+6]))[2],\
-std::get<0>(convertCharToCube(r4[x+7]))[2],\
-std::get<0>(convertCharToCube(r4[x+8]))[2],\
-std::get<0>(convertCharToCube(r4[x+9]))[2],\
-std::get<0>(convertCharToCube(r4[x+10]))[2],\
-std::get<0>(convertCharToCube(r4[x+11]))[2],\
-(y==3 ? cubes[cube][3] : std::get<0>(convertCharToCube(r4[x]))[3]),\
-std::get<0>(convertCharToCube(r4[x+1]))[3],\
-std::get<0>(convertCharToCube(r4[x+2]))[3],\
-std::get<0>(convertCharToCube(r4[x+3]))[3],\
-std::get<0>(convertCharToCube(r4[x+4]))[3],\
-std::get<0>(convertCharToCube(r4[x+5]))[3],\
-std::get<0>(convertCharToCube(r4[x+6]))[3],\
-std::get<0>(convertCharToCube(r4[x+7]))[3],\
-std::get<0>(convertCharToCube(r4[x+8]))[3],\
-std::get<0>(convertCharToCube(r4[x+9]))[3],\
-std::get<0>(convertCharToCube(r4[x+10]))[3],\
-std::get<0>(convertCharToCube(r4[x+11]))[3],\
-(y==2 ? cubes[cube][0] : std::get<0>(convertCharToCube(r3[x]))[0]),\
-std::get<0>(convertCharToCube(r3[x+1]))[0],\
-std::get<0>(convertCharToCube(r3[x+2]))[0],\
-std::get<0>(convertCharToCube(r3[x+3]))[0],\
-std::get<0>(convertCharToCube(r3[x+4]))[0],\
-std::get<0>(convertCharToCube(r3[x+5]))[0],\
-std::get<0>(convertCharToCube(r3[x+6]))[0],\
-std::get<0>(convertCharToCube(r3[x+7]))[0],\
-std::get<0>(convertCharToCube(r3[x+8]))[0],\
-std::get<0>(convertCharToCube(r3[x+9]))[0],\
-std::get<0>(convertCharToCube(r3[x+10]))[0],\
-std::get<0>(convertCharToCube(r3[x+11]))[0],\
-(y==2 ? cubes[cube][1] : std::get<0>(convertCharToCube(r3[x]))[1]),\
-std::get<0>(convertCharToCube(r3[x+1]))[1],\
-std::get<0>(convertCharToCube(r3[x+2]))[1],\
-std::get<0>(convertCharToCube(r3[x+3]))[1],\
-std::get<0>(convertCharToCube(r3[x+4]))[1],\
-std::get<0>(convertCharToCube(r3[x+5]))[1],\
-std::get<0>(convertCharToCube(r3[x+6]))[1],\
-std::get<0>(convertCharToCube(r3[x+7]))[1],\
-std::get<0>(convertCharToCube(r3[x+8]))[1],\
-std::get<0>(convertCharToCube(r3[x+9]))[1],\
-std::get<0>(convertCharToCube(r3[x+10]))[1],\
-std::get<0>(convertCharToCube(r3[x+11]))[1],\
-(y==2 ? cubes[cube][2] : std::get<0>(convertCharToCube(r3[x]))[2]),\
-std::get<0>(convertCharToCube(r3[x+1]))[2],\
-std::get<0>(convertCharToCube(r3[x+2]))[2],\
-std::get<0>(convertCharToCube(r3[x+3]))[2],\
-std::get<0>(convertCharToCube(r3[x+4]))[2],\
-std::get<0>(convertCharToCube(r3[x+5]))[2],\
-std::get<0>(convertCharToCube(r3[x+6]))[2],\
-std::get<0>(convertCharToCube(r3[x+7]))[2],\
-std::get<0>(convertCharToCube(r3[x+8]))[2],\
-std::get<0>(convertCharToCube(r3[x+9]))[2],\
-std::get<0>(convertCharToCube(r3[x+10]))[2],\
-std::get<0>(convertCharToCube(r3[x+11]))[2],\
-(y==2 ? cubes[cube][3] : std::get<0>(convertCharToCube(r3[x]))[3]),\
-std::get<0>(convertCharToCube(r3[x+1]))[3],\
-std::get<0>(convertCharToCube(r3[x+2]))[3],\
-std::get<0>(convertCharToCube(r3[x+3]))[3],\
-std::get<0>(convertCharToCube(r3[x+4]))[3],\
-std::get<0>(convertCharToCube(r3[x+5]))[3],\
-std::get<0>(convertCharToCube(r3[x+6]))[3],\
-std::get<0>(convertCharToCube(r3[x+7]))[3],\
-std::get<0>(convertCharToCube(r3[x+8]))[3],\
-std::get<0>(convertCharToCube(r3[x+9]))[3],\
-std::get<0>(convertCharToCube(r3[x+10]))[3],\
-std::get<0>(convertCharToCube(r3[x+11]))[3],\
-(y==1 ? cubes[cube][0] : std::get<0>(convertCharToCube(r2[x]))[0]),\
-std::get<0>(convertCharToCube(r2[x+1]))[0],\
-std::get<0>(convertCharToCube(r2[x+2]))[0],\
-std::get<0>(convertCharToCube(r2[x+3]))[0],\
-std::get<0>(convertCharToCube(r2[x+4]))[0],\
-std::get<0>(convertCharToCube(r2[x+5]))[0],\
-std::get<0>(convertCharToCube(r2[x+6]))[0],\
-std::get<0>(convertCharToCube(r2[x+7]))[0],\
-std::get<0>(convertCharToCube(r2[x+8]))[0],\
-std::get<0>(convertCharToCube(r2[x+9]))[0],\
-std::get<0>(convertCharToCube(r2[x+10]))[0],\
-std::get<0>(convertCharToCube(r2[x+11]))[0],\
-(y==1 ? cubes[cube][1] : std::get<0>(convertCharToCube(r2[x]))[1]),\
-std::get<0>(convertCharToCube(r2[x+1]))[1],\
-std::get<0>(convertCharToCube(r2[x+2]))[1],\
-std::get<0>(convertCharToCube(r2[x+3]))[1],\
-std::get<0>(convertCharToCube(r2[x+4]))[1],\
-std::get<0>(convertCharToCube(r2[x+5]))[1],\
-std::get<0>(convertCharToCube(r2[x+6]))[1],\
-std::get<0>(convertCharToCube(r2[x+7]))[1],\
-std::get<0>(convertCharToCube(r2[x+8]))[1],\
-std::get<0>(convertCharToCube(r2[x+9]))[1],\
-std::get<0>(convertCharToCube(r2[x+10]))[1],\
-std::get<0>(convertCharToCube(r2[x+11]))[1],\
-(y==1 ? cubes[cube][2] : std::get<0>(convertCharToCube(r2[x]))[2]),\
-std::get<0>(convertCharToCube(r2[x+1]))[2],\
-std::get<0>(convertCharToCube(r2[x+2]))[2],\
-std::get<0>(convertCharToCube(r2[x+3]))[2],\
-std::get<0>(convertCharToCube(r2[x+4]))[2],\
-std::get<0>(convertCharToCube(r2[x+5]))[2],\
-std::get<0>(convertCharToCube(r2[x+6]))[2],\
-std::get<0>(convertCharToCube(r2[x+7]))[2],\
-std::get<0>(convertCharToCube(r2[x+8]))[2],\
-std::get<0>(convertCharToCube(r2[x+9]))[2],\
-std::get<0>(convertCharToCube(r2[x+10]))[2],\
-std::get<0>(convertCharToCube(r2[x+11]))[2],\
-(y==1 ? cubes[cube][3] : std::get<0>(convertCharToCube(r2[x]))[3]),\
-std::get<0>(convertCharToCube(r2[x+1]))[3],\
-std::get<0>(convertCharToCube(r2[x+2]))[3],\
-std::get<0>(convertCharToCube(r2[x+3]))[3],\
-std::get<0>(convertCharToCube(r2[x+4]))[3],\
-std::get<0>(convertCharToCube(r2[x+5]))[3],\
-std::get<0>(convertCharToCube(r2[x+6]))[3],\
-std::get<0>(convertCharToCube(r2[x+7]))[3],\
-std::get<0>(convertCharToCube(r2[x+8]))[3],\
-std::get<0>(convertCharToCube(r2[x+9]))[3],\
-std::get<0>(convertCharToCube(r2[x+10]))[3],\
-std::get<0>(convertCharToCube(r2[x+11]))[3],\
-(y==0 ? cubes[cube][0] : std::get<0>(convertCharToCube(r1[x]))[0]),\
-std::get<0>(convertCharToCube(r1[x+1]))[0],\
-std::get<0>(convertCharToCube(r1[x+2]))[0],\
-std::get<0>(convertCharToCube(r1[x+3]))[0],\
-std::get<0>(convertCharToCube(r1[x+4]))[0],\
-std::get<0>(convertCharToCube(r1[x+5]))[0],\
-std::get<0>(convertCharToCube(r1[x+6]))[0],\
-std::get<0>(convertCharToCube(r1[x+7]))[0],\
-std::get<0>(convertCharToCube(r1[x+8]))[0],\
-std::get<0>(convertCharToCube(r1[x+9]))[0],\
-std::get<0>(convertCharToCube(r1[x+10]))[0],\
-std::get<0>(convertCharToCube(r1[x+11]))[0],\
-(y==0 ? cubes[cube][1] : std::get<0>(convertCharToCube(r1[x]))[1]),\
-std::get<0>(convertCharToCube(r1[x+1]))[1],\
-std::get<0>(convertCharToCube(r1[x+2]))[1],\
-std::get<0>(convertCharToCube(r1[x+3]))[1],\
-std::get<0>(convertCharToCube(r1[x+4]))[1],\
-std::get<0>(convertCharToCube(r1[x+5]))[1],\
-std::get<0>(convertCharToCube(r1[x+6]))[1],\
-std::get<0>(convertCharToCube(r1[x+7]))[1],\
-std::get<0>(convertCharToCube(r1[x+8]))[1],\
-std::get<0>(convertCharToCube(r1[x+9]))[1],\
-std::get<0>(convertCharToCube(r1[x+10]))[1],\
-std::get<0>(convertCharToCube(r1[x+11]))[1],\
-(y==0 ? cubes[cube][2] : std::get<0>(convertCharToCube(r1[x]))[2]),\
-std::get<0>(convertCharToCube(r1[x+1]))[2],\
-std::get<0>(convertCharToCube(r1[x+2]))[2],\
-std::get<0>(convertCharToCube(r1[x+3]))[2],\
-std::get<0>(convertCharToCube(r1[x+4]))[2],\
-std::get<0>(convertCharToCube(r1[x+5]))[2],\
-std::get<0>(convertCharToCube(r1[x+6]))[2],\
-std::get<0>(convertCharToCube(r1[x+7]))[2],\
-std::get<0>(convertCharToCube(r1[x+8]))[2],\
-std::get<0>(convertCharToCube(r1[x+9]))[2],\
-std::get<0>(convertCharToCube(r1[x+10]))[2],\
-std::get<0>(convertCharToCube(r1[x+11]))[2],\
-(y==0 ? cubes[cube][3] : std::get<0>(convertCharToCube(r1[x]))[3]),\
-std::get<0>(convertCharToCube(r1[x+1]))[3],\
-std::get<0>(convertCharToCube(r1[x+2]))[3],\
-std::get<0>(convertCharToCube(r1[x+3]))[3],\
-std::get<0>(convertCharToCube(r1[x+4]))[3],\
-std::get<0>(convertCharToCube(r1[x+5]))[3],\
-std::get<0>(convertCharToCube(r1[x+6]))[3],\
-std::get<0>(convertCharToCube(r1[x+7]))[3],\
-std::get<0>(convertCharToCube(r1[x+8]))[3],\
-std::get<0>(convertCharToCube(r1[x+9]))[3],\
-std::get<0>(convertCharToCube(r1[x+10]))[3],\
-std::get<0>(convertCharToCube(r1[x+11]))[3]);} // Prints the squares
-		sleep(.01);
+		// Re-writing inefficient code, this is to print
+		for (unsigned int linen = makeUnsigned_i(y_showing); linen < makeUnsigned_i(y_showing); linen++) {
+			for (int iter = 0; iter < 13; iter++) {
+				for (int linenn = 0; linenn < 5; linenn++) {
+					if (iter == 2) sprintf(terminal, "%s", cubes[cube][linenn]);
+					sprintf(terminal, "%s", std::get<0>(convertCharToCube(ra[linen][iter]))[linenn]);
+				}
+			}
+		}
 		consoleClear();
 		printf(terminal);
 		#ifdef __DEBUG
@@ -590,7 +230,7 @@ std::get<0>(convertCharToCube(r1[x+11]))[3]);} // Prints the squares
 		consoleSelect(&screen);
 		#endif
 		unrec_blocks = 0;
-		if (((std::get<1>(convertCharToCube(ra[y][x])) && !jump)/* player on spike */ || (!std::get<2>(convertCharToCube(ra[y][x]))))/* player in block */ && y < 7) {
+		if (((std::get<1>(convertCharToCube(ra[y][x])) && !jump)/* player on spike */ || (!std::get<2>(convertCharToCube(ra[y][x]))))/* player in block */ && y < 200) {
 			std::stringstream ss;
 			ss<<(++attempts);
 			attemptss = ss.str();
@@ -621,10 +261,11 @@ std::get<0>(convertCharToCube(r1[x+11]))[3]);} // Prints the squares
         else if (!(!jump && /*ra[y-1][x] != ' ' && */(ra[y-1][x+1] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x+1]))) && y > 0 && (ra[y-1][x] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x]))))) {falling = false;}
 		else if (y < 8) {if ((ra[y][x] == 'n') || (ra[y][x] == '^')) {if (ra[y][x] == '^') jumpPad = true; else jump = true; y_orig = y++;}}
 		xoh = x * 100;
-		percentage = xoh / r8.length();
+		percentage = xoh / ra[8].length();
 		consoleSelect(&debug);
 		printf("Percentage: %d\n", percentage);
 		consoleSelect(&screen);
+		y_showing = y - 4;
 		sleep(ldel);
 	}
 	#ifndef __LUA_SOUND_

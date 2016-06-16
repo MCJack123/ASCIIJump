@@ -66,6 +66,10 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--upload ftp://10.0.1.8:5000/3ds/ASCIIJump3DS/ ASCIIJump3DS.3dsx ASCIIJump3DS.elf"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--upload ftp://10.5.10.87:5000/3ds/ASCIIJump3DS/ ASCIIJump3DS.3dsx ASCIIJump3DS.elf"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
