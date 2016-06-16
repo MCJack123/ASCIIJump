@@ -81,6 +81,10 @@ int dirExists(const char *path)
         return 0;
     else if(info.st_mode & S_IFDIR)
         return 1;
-    else
-        return 0;
+    else return 0;
+}
+
+unsigned int makeUnsigned_i(int unsignee) {
+	if (unsignee < 0) return 0;
+	else return unsignee;
 }
