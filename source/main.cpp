@@ -98,6 +98,7 @@ int main() {
 		#ifndef __LUA_SOUND_
 		if (!audio_load("/3ds/ASCIIJump3DS/data/background_loop.bin", &sound1)) {debugPrint("The song was unable to load."); sleep(3); goto End;}
 		#endif
+		debugPrint("Done loading.");
 	} else {debugPrint("File doesn't exist!"); sleep(3); goto End;}
 	levelInit();
 		consoleClear();
@@ -207,6 +208,21 @@ int main() {
    \\  |   ______________________________  |  /\n\
     \\ |  ||||||||||||||Go!||||||||||||||| | /\n\
 	  \\|  |______________________________| |/\n", levtext, nmtext, nmscore[leveln], pmtext, pmscore[leveln]); runLevel(leveln); break;}
+				else if (kDown & KEY_ZL) {
+					for (std::string level_print[200] : level_map) {
+						for (std::string lev_lev_print : level_print) {
+							printf("%s\n", lev_lev_print.c_str());
+							while (true) {
+								hidScanInput();
+								kDown = hidKeysDown();
+								if (kDown) break;
+							}
+							if (kDown & KEY_B) break;
+						}
+						if (kDown & KEY_B) break;
+					}
+					break;
+				}
 			}
 		} while (true);
 	}
