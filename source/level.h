@@ -3,11 +3,11 @@
 #include <vector>
 #include <sstream>
 #include <cstdarg>
+#include <initializer_list>
 #ifndef __ASCII3DS_UTILS_H_
 #include "utils.h"
 #endif
 #define BOOL_STRING(a) (a)?"true":"false"
-
 // 3DS Top Screen Dimensions:
 //     Width: 400 pixels / 50 chars (8px char width)
 //	  Height: 240 pixels / 30 chars (8px char height)
@@ -17,17 +17,30 @@
 
 std::string level_map[5][200]; // too much?
 std::map<std::string, int> levn;
-float ldel = 0.083333;
+float ldel = 0.083333 * 6;
 int cube = 0;
 std::vector<std::vector<const char *> > cubes = {{"----","||-|","|-||","----"}, {"----","|[]|","|[]|","----"}, {"-][-","|=[|","|]=|","-][-"}, {"----","|][|","|LJ|","----"}};
 
-void registerLevel(int levid, std::string fmt, ...) {	// This will make it easier to put levels in & adds portability. Arguments must be std::string.
-	va_list args;
-	std::string new_level[200];
-	va_start(args, fmt);
-	int count;
-	for (count = 0; count <= 200 && std::string(fmt) != "\0"; count++) new_level[count] = va_arg(args, std::string);
-	for (int cc = count, ccc = 0; cc >= 0; cc--, ccc++) level_map[levid][ccc] = new_level[cc];
+void registerLevel(int levid, std::vector<std::string> new_level) {	// This will make it easier to put levels in & adds portability. Arguments must be std::string.
+	#ifdef __DEBUG
+	consoleSelect(&debug);
+	printf("Verifying...");
+	new_level.size();
+	printf("Size verified. Size: %i\n", new_level.size());
+	consoleSelect(&screen);
+	#endif
+	for (int cc = new_level.size() - 1, ccc = 0; (true); cc--, ccc++) {
+		#ifdef __DEBUG
+		consoleSelect(&debug);
+		//printf("CC: %i, CCC: %i", cc, ccc);
+		//if (cc >= 0) printf(", new_level[%i]: %s\n", cc, new_level[cc].c_str());
+		//else printf("\n");
+		consoleSelect(&screen);
+		#endif
+		if (cc >= 0) level_map[levid][ccc] = new_level[cc];
+		else level_map[levid][ccc] = std::string((size_t) new_level[1].length(), ' ');
+		if (ccc > 200) break;
+	}
 }
 
 void levelInit() {
@@ -39,7 +52,8 @@ void levelInit() {
 	}
 	i = 0;
 	// Now the fun part: making the level layouts. I am going to write multi-line for ease of use.
-	registerLevel(0,\
+	debugPrint("Registering id 0");
+	registerLevel(0,{\
 "                                                                                                                                                             __       __         XXXX                                                             X    DDDDDDDDDDDDDD               ",\
 "                                                                                                                                                            XXXX     XXXX        ----       X                                                 -             DDDDDD                  ",\
 "                                                                                                                                             -   -    DDDDDDDDDDDDDDDDDDDDDDDD          DDDDD                                             -                                         ",\
@@ -47,10 +61,13 @@ void levelInit() {
 "                                                                                                                                     -                  DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD  ----       X             -             DDDDDDDDDDDDDDDDDD\\                 ",\
 "                                                          B                                                            X         -                      DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD           -------         -                        DDDDDDDDDDDD\\                ",\
 "                                                      B   D                                            X        DDDDDDDDDDDDDD                          DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD                   -----                            DDDDDDDDDDDDD\\               ",\
-"                 B              xX              XXBsssDsssDX                    XX     DDDDDDDDsssDDDDDDDDDDDsssDDDDDDDDDDDDDDssssssssssssssssssssssssssDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDssssssssssssssssssssssssssssssssssssssssssssssssssssDDDDDDDDDDDDDD\\              F");
-	registerLevel(1, "", "", "", "", "", "", "", "C");
-	registerLevel(2, "", "", "", "", "", "", "", "C");
-	registerLevel(3, "", "", "", "", "", "", "", "C");
+"                 B              xX              XXBsssDsssDX                    XX     DDDDDDDDsssDDDDDDDDDDDsssDDDDDDDDDDDDDDssssssssssssssssssssssssssDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDssssssssssssssssssssssssssssssssssssssssssssssssssssDDDDDDDDDDDDDD\\              F"});
+	debugPrint("Registering id 1");
+	registerLevel(1, {"", "", "", "", "", "", "", "C"});
+	debugPrint("Registering id 2");
+	registerLevel(2, {"", "", "", "", "", "", "", "C"});
+	debugPrint("Registering id 3");
+	registerLevel(3, {"", "", "", "", "", "", "", "C"});
 }
 int unrec_blocks = 0;
 std::tuple<std::vector<const char *>, bool, bool> convertCharToCube(char charToCube) {
@@ -64,7 +81,7 @@ std::tuple<std::vector<const char *>, bool, bool> convertCharToCube(char charToC
 	else if (charToCube == '-') {retvec = {"----", "|__|", "    ", "    "}; willKill = false; transparent = false;}
 	else if (charToCube == '\\') {retvec = {"\\   ", "|\\  ", "| \\ ", "|  \\"}; willKill = false; transparent = false;}
 	else if (charToCube == '/') {retvec = {"   /", "  /|", " / |", "/  |"}; willKill = false; transparent = false;}
-	else if (charToCube == 'F') {retvec = {"    ", "    ", "    ", "    "}; willKill = false; transparent = true;}
+	else if (charToCube == 'F') {retvec = {" \\|-", " -| ", " >| ", " /|_"}; willKill = false; transparent = true;}
 	else if (charToCube == ' ') {retvec = {"    ", "    ", "    ", "    "}; willKill = false; transparent = true;}
 	else if (charToCube == '^') {retvec = {"    ", "    ", "    ", "//\\\\"}; willKill = false; transparent = true;}
 	else if (charToCube == 'n') {retvec = {"    ", "    ", "    ", "/--\\"}; willKill = false; transparent = true;}
@@ -196,7 +213,7 @@ void runLevel(int levelid) {
 	int attempts = 1;
 	int y = 0;
 	int y_orig = 0;
-	int y_showing = -4;
+	signed int y_showing = -4;
 	bool jump = false;
     bool falling = false;
 	bool jumpPad = false;
@@ -207,18 +224,36 @@ void runLevel(int levelid) {
 	for (int x = 0; (true); x++) {
 		if (ra[1][x+11] == 'F') {printf("You win!"); sleep(3); break;}
 		//if (y > 7) {y = 0; debugPrint("Y is greater than 7!");}
-		char * terminal = (char*)malloc(2000);
+		std::string terminal;
 		// Re-writing inefficient code, this is to print
-		for (unsigned int linen = makeUnsigned_i(y_showing); linen < makeUnsigned_i(y_showing); linen++) {
-			for (int iter = 0; iter < 13; iter++) {
-				for (int linenn = 0; linenn < 5; linenn++) {
-					if (iter == 2) sprintf(terminal, "%s", cubes[cube][linenn]);
-					sprintf(terminal, "%s", std::get<0>(convertCharToCube(ra[linen][iter]))[linenn]);
+		for (unsigned int linen = makeUnsigned_i(y_showing) + 7; linen > makeUnsigned_i(y_showing); linen--) {
+			//debugPrint("iter1");
+			for (int linenn = 3; linenn >= 0; linenn--) {
+				//debugPrint("iter2");
+				for (int iter = 0; iter < 12; iter++) {
+					//debugPrint("iter3");
+					#ifdef __DEBUG
+					consoleSelect(&debug);
+					//printf("iter: %i, linen: %i, linenn: %i, y_showing: %i\n", iter, linen, linenn, y_showing);
+					#endif
+					if (iter == 2 && linen == (y - makeUnsigned_i(y_showing))) terminal = terminal + cubes[cube][linenn];
+					else terminal = terminal + std::get<0>(convertCharToCube(ra[linen][iter]))[linenn];
+					#ifdef __DEBUG
+					//printf(", text: \"%s\"\n", std::get<0>(convertCharToCube(ra[linen][iter]))[linenn]);
+					consoleSelect(&screen);
+					#endif
 				}
+				terminal = terminal + "\n";
 			}
 		}
+		#ifdef __DEBUG
+		consoleSelect(&debug);
+		//printf("len: %i\n", std::string(terminal).length());
+		consoleSelect(&screen);
+		#endif
+		if (terminal.length() < 25) printf("Not long!!! Error!!!\n");
 		consoleClear();
-		printf(terminal);
+		printf(terminal.c_str());
 		#ifdef __DEBUG
 		if (unrec_blocks > 5) {
 		consoleSelect(&debug);
@@ -247,19 +282,24 @@ void runLevel(int levelid) {
 			audio_play(&sound1, false);
 			#endif
 		} // You died!
+		debugPrint("Reading keys");
 		hidScanInput();
 		u32 bDown = hidKeysDown();
 		u32 bHeld = hidKeysHeld();
 		touchPosition touch;
 		hidTouchRead(&touch);
 		if ((bDown | bHeld) & KEY_START) break;
+		debugPrint("Not ending level");
 		if (((bDown | bHeld) || (touch.px != 0 || touch.py != 0)) && !jump && !falling && !std::get<1>(convertCharToCube(ra[y-1][x]))) {jump = true; y_orig = y++;}
 		else if (jump && y == y_orig + 1) {y++; jump = false; falling = true;}
 		else if (jumpPad && y == y_orig + 1) {y++; jumpPad = false; jump = true; y_orig = y;}
         else if (jump && y == y_orig + 2) {jump = false; falling = true;}
-        else if (!jump && /*ra[y-1][x] != ' ' && */(ra[y-1][x+1] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x+1]))) && y > 0 && (ra[y-1][x] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x])))) {y--; falling = true;}
-        else if (!(!jump && /*ra[y-1][x] != ' ' && */(ra[y-1][x+1] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x+1]))) && y > 0 && (ra[y-1][x] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x]))))) {falling = false;}
 		else if (y < 8) {if ((ra[y][x] == 'n') || (ra[y][x] == '^')) {if (ra[y][x] == '^') jumpPad = true; else jump = true; y_orig = y++;}}
+        else {
+			if (y != 0) {if (!jump && /*ra[y-1][x] != ' ' && */(ra[y-1][x+1] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x+1]))) && y > 0 && (ra[y-1][x] == ' ' || std::get<1>(convertCharToCube(ra[y-1][x])))) {y--; falling = true;} else falling = false;}
+			else falling = false;
+		}
+		debugPrint("Calculating percentage");
 		xoh = x * 100;
 		percentage = xoh / ra[8].length();
 		consoleSelect(&debug);
