@@ -1,0 +1,29 @@
+// 3DS Top Screen Dimensions:
+//     Width: 400 pixels / 50 chars (8px char width)
+//	  Height: 240 pixels / 30 chars (8px char height)
+// 3DS Bottom Screen Dimensions:
+//     Width: 320 pixels / 40 chars (8px char width)
+//    Height: Same as Top Screen
+{{"----","||-|","|-||","----"}, {"----","|[]|","|[]|","----"}, {"-][-","|=[|","|]=|","-][-"}, {"----","|][|","|LJ|","----"}};
+"                                                                                                                                                             __       __         XXXX                                                             X    DDDDDDDDDDDDDD               ",\
+"                                                                                                                                                            XXXX     XXXX        ----       X                                                 -             DDDDDD                  ",\
+"                                                                                                                                             -   -    DDDDDDDDDDDDDDDDDDDDDDDD          DDDDD                                             -                                         ",\
+"                                                                                                                                         -              DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDX              X                         -                                             ",\
+"                                                                                                                                     -                  DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD  ----       X             -             DDDDDDDDDDDDDDDDDD\\                 ",\
+"                                                          B                                                            X         -                      DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD           -------         -                        DDDDDDDDDDDD\\                ",\
+"                                                      B   D                                            X        DDDDDDDDDDDDDD                          DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD                   -----                            DDDDDDDDDDDDD\\               ",\
+"                 B              xX              XXBsssDsssDX                    XX     DDDDDDDDsssDDDDDDDDDDDsssDDDDDDDDDDDDDDssssssssssssssssssssssssssDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDssssssssssssssssssssssssssssssssssssssssssssssssssssDDDDDDDDDDDDDD\\              F"});
+if (charToCube == 'B') {retvec = {"----", "|  |", "|  |", "----"}; willKill = false; transparent = false;}
+-	else if (charToCube == 'D') {retvec = {" || ", "-++-", "-++-", " || "}; willKill = false; transparent = false;}
+-	else if (charToCube == 'X') {retvec = {"    ", " /\\ ", "/  \\", "|__|"}; willKill = true; transparent = false;}
+-	else if (charToCube == 'x') {retvec = {"    ", "    ", " /\\ ", "/__\\"}; willKill = true; transparent = false;}
+-	else if (charToCube == 's') {retvec = {"    ", "    ", "    ", "/\\/\\"}; willKill = true; transparent = false;}
+-	else if (charToCube == '-') {retvec = {"----", "|__|", "    ", "    "}; willKill = false; transparent = false;}
+-	else if (charToCube == '\\') {retvec = {"\\   ", "|\\  ", "| \\ ", "|  \\"}; willKill = false; transparent = false;}
+-	else if (charToCube == '/') {retvec = {"   /", "  /|", " / |", "/  |"}; willKill = false; transparent = false;}
+-	else if (charToCube == 'F') {retvec = {" \\|-", " -| ", " >| ", " /|_"}; willKill = false; transparent = true;}
+-	else if (charToCube == ' ') {retvec = {"    ", "    ", "    ", "    "}; willKill = false; transparent = true;}
+-	else if (charToCube == '^') {retvec = {"    ", "    ", "    ", "//\\\\"}; willKill = false; transparent = true;}
+-	else if (charToCube == 'n') {retvec = {"    ", "    ", "    ", "/--\\"}; willKill = false; transparent = true;}
+-	else if (charToCube == '_') {retvec = {"    ", "    ", "----", "|__|"}; willKill = false; transparent = false;}
+-	else if (charToCube == '\0') {retvec = {"    ", "    ", "    ", "    "}; willKill = false; transparent = true;}
