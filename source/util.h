@@ -7,6 +7,10 @@ typedef struct audio {
     void *data,
     unsigned long len
 } audio;
+typedef struct rect {
+    unsigned int width,
+    unsigned int height
+} rect;
 
 enum keypress {
     KEY_PRESSED_NONE,
@@ -25,6 +29,7 @@ enum keypress {
 
 extern void initialize();
 extern void exit();
+extern rect getScreenDimensions();
 extern void print(std::string text);
 extern void printScreen(std::vector<std::vector<Block> > blockmap, char[4][4] icon);
 extern keypress getKey();
