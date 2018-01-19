@@ -18,8 +18,19 @@ void exit() {
     endscr();
 }
 
+rect getScreenDimensions() {
+    rect retval;
+    retval.width = COLUMNS;
+    retval.height = LINES;
+    return retval;
+}
+
 void print(std::string text) {
     waddstr(stdscr, text.c_str());
+}
+
+void printScreen(std::vector<std::vector<Block> > blockmap, char[4][4] icon) {
+    
 }
 
 keypress getkey() {
