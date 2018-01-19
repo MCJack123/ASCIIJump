@@ -18,5 +18,5 @@ enum keypress {
 extern void initialize();
 extern void exit();
 extern void print(std::string text);
-extern char getKey();
+extern keypress getKey();
 extern void playAudio(audio buf);
