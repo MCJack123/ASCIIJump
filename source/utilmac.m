@@ -46,3 +46,19 @@ void playAudio(audio buf) {
 void stopAudio() {
     [player stop];
 }
+
+std::string readFile(std::string file) {
+    std::ifstream in;
+    in.open(file.c_str());
+    std::string retval, line;
+    while (std::getline(in, line)) retval += line + "\n";
+    in.close();
+    return retval;
+}
+
+void writeFile(std::string file, std::string text) {
+    std::ofstream out;
+    out.open(file.c_str());
+    out << text;
+    out.close();
+}
