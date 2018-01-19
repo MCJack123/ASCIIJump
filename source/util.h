@@ -32,6 +32,7 @@ extern void exit();
 extern rect getScreenDimensions();
 extern void print(std::string text);
 extern void printScreen(std::vector<std::vector<Block> > blockmap, char[4][4] icon);
+extern void moveCursor(int x, int y);
 extern keypress getKey();
 extern void playAudio(audio buf);
 extern void stopAudio();
