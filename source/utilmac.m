@@ -27,10 +27,20 @@ rect getScreenDimensions() {
 
 void print(std::string text) {
     waddstr(stdscr, text.c_str());
+    wrefresh(stdscr);
 }
 
 void printScreen(std::vector<std::vector<Block> > blockmap, char[4][4] icon) {
-    
+    move(0, 0);
+    wrefresh(stdscr);
+    std::vector<std::vector<char> > screen;
+    for (int x = 0; x < COLUMNS; x++) for (int y = 0; y < LINES; y++) mvwaddch(stdscr, y, x, blockmap[x/4][y/4].block[x%4][y%4]);
+    for (int x = 5; x < 9; x++) for (int y = LINES - 4; y < LINES; y++) mvwaddch(stdscr, y, x, icon[x-5][y-LINES+4]);
+}
+
+void moveCursor(int x, int y) {
+    move(y, x);
+    wrefresh(stdscr);
 }
 
 keypress getkey() {
@@ -50,6 +60,7 @@ keypress getkey() {
 }
 
 void playAudio(audio buf) {
+    [player stop];
     player = [[AVAudioPlayer alloc] initWithData:[[NSData alloc] initWithBytes:buf.data length:buf.len] error:NULL];
     [player play];
 }
