@@ -27,3 +27,5 @@ extern void print(std::string text);
 extern keypress getKey();
 extern void playAudio(audio buf);
 extern void stopAudio();
+std::string readFile(std::string file);
+void writeFile(std::string file, std::string text);
