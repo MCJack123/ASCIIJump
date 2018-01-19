@@ -1,5 +1,7 @@
+#pragma once
 #include <string>
 #include <vector>
+#include "level.h"
 
 typedef struct audio {
     void *data,
@@ -24,8 +26,9 @@ enum keypress {
 extern void initialize();
 extern void exit();
 extern void print(std::string text);
+extern void printScreen(std::vector<std::vector<Block> > blockmap, char[4][4] icon);
 extern keypress getKey();
 extern void playAudio(audio buf);
 extern void stopAudio();
-std::string readFile(std::string file);
-void writeFile(std::string file, std::string text);
+extern std::string readFile(std::string file);
+extern void writeFile(std::string file, std::string text);
