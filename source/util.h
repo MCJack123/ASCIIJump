@@ -1,7 +1,10 @@
 #include <string>
 #include <vector>
 
-typedef char *audio;
+typedef struct audio {
+    void *data,
+    unsigned long len
+} audio;
 
 enum keypress {
     KEY_PRESSED_NONE,
@@ -11,9 +14,11 @@ enum keypress {
     KEY_PRESSED_RIGHT,
     KEY_PRESSED_SELECT,
     KEY_PRESSED_JUMP,
-    KEY_PRESSED_BLOCKCHANGE,
-    KEY_PRESSED_LEVELEDIT,
-    KEY_PRESSED_EDITCHANGE
+    KEY_PRESSED_BACK,
+    KEY_PRESSED_ICONCHANGE,
+    KEY_EDIT_LEVEL,
+    KEY_EDIT_CHANGE,
+    KEY_EDIT_DELETE
 }
 
 extern void initialize();
@@ -21,3 +26,4 @@ extern void exit();
 extern void print(std::string text);
 extern keypress getKey();
 extern void playAudio(audio buf);
+extern void stopAudio();
