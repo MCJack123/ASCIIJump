@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <json/json.h>
 #include "level.h"
 
 typedef struct audio {
@@ -38,3 +39,4 @@ extern void playAudio(audio buf);
 extern void stopAudio();
 extern std::string readFile(std::string file);
 extern void writeFile(std::string file, std::string text);
+extern Level readLevel(Json::Value level);
