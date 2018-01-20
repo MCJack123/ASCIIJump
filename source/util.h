@@ -4,6 +4,8 @@
 #include <json/json.h>
 #include "level.h"
 
+bool debugEnabled = false;
+
 typedef struct audio {
     void *data,
     unsigned long len
