@@ -1,19 +1,31 @@
+#include <iostream>
 #include <fstream>
 #include <ncurses.h>
 #include <unistd.h>
 #include "util.h"
 #include "base64.h"
 
-void initialize() {
+std::ofstream debug;
+
+void initialize(int argc, const char * argv[]) {
     initscr();
     cbreak();
     noecho();
     keypad(stdscr, TRUE);
     nodelay(stdscr, TRUE);
+    int argn = 0;
+    for (const char * arg : argv) {
+        if (std::string(arg) == "-d" && !debugEnabled) {
+            debugEnabled = true;
+            debug.open(argv[argn+1]);
+        }
+        argn++;
+    }
 }
 
 void exit() {
     endscr();
+    if (debugEnabled) debug.close();
 }
 
 rect getScreenDimensions() {
@@ -28,6 +40,13 @@ void print(std::string text) {
     wrefresh(stdscr);
 }
 
+void debugPrint(std::string text) {
+    if (debugEnabled) {
+        debug << text;
+        debug.flush();
+    }
+}
+
 void printScreen(std::vector<std::vector<Block> > blockmap, char[4][4] icon) {
     move(0, 0);
     wrefresh(stdscr);
@@ -39,6 +58,10 @@ void printScreen(std::vector<std::vector<Block> > blockmap, char[4][4] icon) {
 void moveCursor(int x, int y) {
     move(y, x);
     wrefresh(stdscr);
+}
+
+void clearScreen() {
+    clear();
 }
 
 keypress getkey() {
