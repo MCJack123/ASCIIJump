@@ -97,7 +97,9 @@ Level unserializeLevel(Json::Value level) {
             retval.level[x][y] = Block(bv["symbol"].stringValue()[0], block, bv["clear"].boolValue(), bv["harmful"].boolValue(), bv["system"].intValue());
         }
     }
-    std::string audio_b64 = level["song"].stringValue();
+    std::string audio_b64 = base64_decode(*const_cast<std::string const>(level["song"].stringValue()));
+    retval.song.data = &audio_b64[0];
+    retval.song.len = audio_b64.length();
     return retval;
 }
 
@@ -123,5 +125,6 @@ Json::Value serializeLevel(Level level) {
             retval["level"][x][y] = block;
         }
     }
+    retval["song"] = Json::Value(base64_encode(const_cast<const unsigned char *>((unsigned char *)retval.song.data), retval.song.len));
     return retval;
 }
