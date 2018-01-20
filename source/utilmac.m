@@ -3,6 +3,7 @@
 #include <ncurses.h>
 #include <unistd.h>
 #include "util.h"
+#include "base64.h"
 
 AVAudioPlayer *player;
 
@@ -83,4 +84,52 @@ void writeFile(std::string file, std::string text) {
     out.open(file.c_str());
     out << text;
     out.close();
+}
+
+Level unserializeLevel(Json::Value level) {
+    Level retval;
+    retval.name = level["name"].stringValue();
+    retval.normalCompletion = level["normalCompletion"].floatValue();
+    retval.practiceCompletion = level["practiceCompletion"].floatValue();
+    retval.levelid = level["levelid"].intValue();
+    retval.description = level["description"].stringValue();
+    for (int x = 0; x < level["level"].size(); x++) {
+        retval.level[x] = std::vector<Block>();
+        for (int y = 0; y < level["level"][x].size(); y++) {
+            char block[4][4];
+            Json::Value bv = level["level"][x][y];
+            for (int z = 0; z < 4; z++) block[z] = bv["block"][z].stringValue();
+            retval.level[x][y] = Block(bv["symbol"].stringValue()[0], block, bv["clear"].boolValue(), bv["harmful"].boolValue(), bv["system"].intValue());
+        }
+    }
+    std::string audio_b64 = base64_decode(*const_cast<std::string const>(level["song"].stringValue()));
+    retval.song.data = &audio_b64[0];
+    retval.song.len = audio_b64.length();
+    return retval;
+}
+
+Json::Value serializeLevel(Level level) {
+    Json::Value retval(objectValue);
+    retval["name"] = Json::Value(level.name);
+    retval["normalCompletion"] = Json::Value(level.normalCompletion);
+    retval["practiceCompletion"] = Json::Value(level.practiceCompletion);
+    retval["levelid"] = Json::Value(level.levelid);
+    retval["description"] = Json::Value(level.description);
+    retval["level"] = Json::Value(arrayValue);
+    for (int x = 0; x < level.level.size(); x++) {
+        retval["level"][x] = Json::Value(arrayValue);
+        for (int y = 0; y < level["level"][x].size(); y++) {
+            Json::Value block(objectValue);
+            Block bv = level.level[x][y];
+            block["block"] = Json::Value(arrayValue);
+            for (int z = 0; z < 4; z++) block["block"][z] = Json::Value(bv.block[z]);
+            block["symbol"] = Json::Value(std::string(bv.symbol));
+            block["clear"] = Json::Value(bv.clear);
+            block["harmful"] = Json::Value(bv.harmful);
+            block["system"] = Json::Value(bv.system);
+            retval["level"][x][y] = block;
+        }
+    }
+    retval["song"] = Json::Value(base64_encode(const_cast<const unsigned char *>((unsigned char *)retval.song.data), retval.song.len));
+    return retval;
 }
