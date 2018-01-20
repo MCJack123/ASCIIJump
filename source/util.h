@@ -39,4 +39,5 @@ extern void playAudio(audio buf);
 extern void stopAudio();
 extern std::string readFile(std::string file);
 extern void writeFile(std::string file, std::string text);
-extern Level readLevel(Json::Value level);
+extern Level unserializeLevel(Json::Value level);
+extern Json::Value serializeLevel(Level level);
