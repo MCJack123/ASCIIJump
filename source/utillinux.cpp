@@ -24,6 +24,10 @@ void initialize(int argc, const char * argv[]) {
 }
 
 void exit() {
+    nodelay(stdscr, FALSE);
+    keypad(stdscr, FALSE);
+    echo();
+    nocbreak();
     endscr();
     if (debugEnabled) debug.close();
 }
