@@ -31,7 +31,9 @@ std::vector<Block> blocks = {
     Block('^', {"    ", "    ", "    ", "//\\\\"}, false, false, 2),
     Block('n', {"    ", "    ", "    ", "/--\\"}, false, false, 3),
     Block('_', {"    ", "    ", "----", "|__|"}),
-    Block('\0', {"    ", "    ", "    ", "    "}, true)
+    Block('\0', {"    ", "    ", "    ", "    "}, true),
+    Block('(', {" (( ", "((  ", "((  ", " (( "}, true, false, 4),
+    Block(')', {" )) ", "  ))", "  ))", " )) "}, true, false, 5)
 };
 std::map<char, Block> = {
     {'B', blocks[0]}, 
@@ -47,7 +49,9 @@ std::map<char, Block> = {
     {'^', blocks[10]}, 
     {'n', blocks[11]}, 
     {'_', blocks[12]}, 
-    {'\0', blocks[13]}
+    {'\0', blocks[13]},
+    {'(', blocks[14]},
+    {')', blocks[15]}
 };
 
 class Level {
@@ -59,4 +63,19 @@ class Level {
     // This is for online levels only
     int levelid = -1;
     std::string description = "";
+}
+
+class LevelRunner {
+    int mode = 0;
+    Level currentLevel;
+    int x = 0;
+    int y = 0;
+public:
+    LevelRunner(Level theLevel) {
+        currentLevel = theLevel;
+    }
+    
+    void runFrame();
+private:
+    std::vector<void(**)()> renderFuncs;
 }
